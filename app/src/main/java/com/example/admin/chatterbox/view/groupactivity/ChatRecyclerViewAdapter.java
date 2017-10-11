@@ -60,8 +60,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            tvAuthor = (TextView) view.findViewById(R.id.id);
-            tvMsg = (TextView) view.findViewById(R.id.content);
+            tvAuthor = (TextView) view.findViewById(R.id.tvAuthor);
+            tvMsg = (TextView) view.findViewById(R.id.tvMessage);
         }
 
         @Override
