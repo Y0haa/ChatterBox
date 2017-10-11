@@ -17,4 +17,9 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
     public void detachView() {
         view = null;
     }
+
+    @Override
+    public void sendMessage() {
+
+    }
 }

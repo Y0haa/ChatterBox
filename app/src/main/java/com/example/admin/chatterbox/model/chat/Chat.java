@@ -7,13 +7,14 @@ import java.util.List;
  */
 
 public class Chat {
-    String post, owner;
+    String post;
+    User owner;
     Long time;
 
     public Chat() {
     }
 
-    public Chat(String post, String owner, Long time) {
+    public Chat(String post, User owner, Long time) {
         this.post = post;
         this.owner = owner;
         this.time = time;
@@ -27,11 +28,11 @@ public class Chat {
         this.post = post;
     }
 
-    public String getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
