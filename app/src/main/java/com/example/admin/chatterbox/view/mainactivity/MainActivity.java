@@ -1,14 +1,13 @@
 package com.example.admin.chatterbox.view.mainactivity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Switch;
 
 import com.example.admin.chatterbox.R;
-import com.example.admin.chatterbox.view.creategroup.CreateGroup;
+import com.example.admin.chatterbox.view.creategroup.CreateGroupActivity;
 import com.example.admin.chatterbox.view.joingroup.JoinGroup;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.btnCreate:
 
-                Intent createIntent = new Intent(this, CreateGroup.class);
+                Intent createIntent = new Intent(this, CreateGroupActivity.class);
                 startActivity(createIntent);
 
                 break;

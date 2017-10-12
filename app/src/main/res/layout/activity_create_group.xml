@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.admin.chatterbox.view.creategroup.CreateGroupActivity">
+
+
+    <TextView
+        android:id="@+id/tvOutputString"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Check"
+
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etInputGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Group Name" />
+
+    <EditText
+        android:id="@+id/etInputGroupPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword" />
+    <Button
+        android:text="Create Group"
+        android:id="@+id/btnCreateGroup"
+        android:onClick="createGroupClicks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>
