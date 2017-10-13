@@ -11,8 +11,7 @@ import android.widget.ImageButton;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.groupactivity.DaggerGroupActivityComponent;
 import com.example.admin.chatterbox.model.chat.Chat;
-
-import java.util.List;
+import com.example.admin.chatterbox.model.chat.User;
 
 import javax.inject.Inject;
 
@@ -20,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class GroupActivity extends AppCompatActivity implements ChatRecyclerViewAdapter.OnListInteractionListener {
+public class GroupActivity extends AppCompatActivity implements ChatRecyclerViewAdapter.OnListInteractionListener, GroupActivityContract.View {
 
     @BindView(R.id.rvChat)
     RecyclerView rvChat;
@@ -32,7 +31,9 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     @Inject
     GroupActivityPresenter presenter;
     private int mColumnCount;
-    private List<Chat> chatList;
+    //private List<Chat> chatList;
+    private ChatRecyclerViewAdapter mAdapter;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +43,17 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
 
         SetupDagger();
 
-        mColumnCount = 1;
+        presenter.attacheView(this);
 
+        mColumnCount = 1;
+        id = getIntent().getStringExtra("ID");
+
+        presenter.findDatabaseReference();
+        //Group group = presenter.getGroup(getIntent().getStringExtra("ID"));
+        //chatList = group.getPosts();
+
+
+        mAdapter = new ChatRecyclerViewAdapter(id, presenter.getDatabaseReference(), this);
     }
 
     @Override
@@ -54,7 +64,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
         } else {
             rvChat.setLayoutManager(new GridLayoutManager(this, mColumnCount));
         }
-        rvChat.setAdapter(new ChatRecyclerViewAdapter(chatList, this));
+        rvChat.setAdapter(mAdapter);
     }
 
     @Override
@@ -70,12 +80,22 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     public void onViewClicked() {
         String msg = etMsg.getText().toString();
         if (msg.length() > 0) {
-            presenter.sendMessage();
+            presenter.sendMessage(id, msg, new User(), 0l);
         }
     }
 
     @Override
     public void OnListInteraction(Chat mItem) {
 
+    }
+
+    @Override
+    public void showError(String s) {
+
+    }
+
+    @Override
+    public void updateInputMsg() {
+        etMsg.setText("");
     }
 }

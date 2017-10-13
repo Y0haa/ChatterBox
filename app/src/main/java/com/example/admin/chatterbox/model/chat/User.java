@@ -15,8 +15,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String name, String username, String email, String phoneNumber, List<Group> createdGroups, List<Group> joinedGroups, List<User> contacts) {
-        this.id = id;
+    public User(String name, String username, String email, String phoneNumber, List<Group> createdGroups, List<Group> joinedGroups, List<User> contacts) {
         this.name = name;
         this.username = username;
         this.email = email;

@@ -8,16 +8,53 @@ import android.widget.TextView;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.model.chat.Chat;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerViewAdapter.ViewHolder> {
+public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerViewAdapter.ViewHolder>{
 
-    private final List<Chat> mValues;
+    private final List<DataSnapshot> mValues;
     private final OnListInteractionListener mListener;
+    private final DatabaseReference databaseReference;
+    private final String groupId;
+    private ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            mValues.add(dataSnapshot);
+            notifyDataSetChanged();
+        }
 
-    public ChatRecyclerViewAdapter(List<Chat> items, OnListInteractionListener listener) {
-        mValues = items;
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    public ChatRecyclerViewAdapter(String id, DatabaseReference databaseReference, OnListInteractionListener listener) {
+        groupId = id;
+        this.databaseReference = databaseReference.child("groups").child(id);
+        databaseReference.addChildEventListener(childEventListener);
+        mValues = new ArrayList<>();
         mListener = listener;
     }
 
@@ -30,9 +67,9 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.tvAuthor.setText(mValues.get(position).getOwner().getUsername());
-        holder.tvMsg.setText(mValues.get(position).getPost());
+        holder.mItem = getItem(position);
+        holder.tvAuthor.setText(holder.mItem.getOwner().getUsername());
+        holder.tvMsg.setText(holder.mItem.getPost());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +81,11 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 }
             }
         });
+    }
+
+    private Chat getItem(int position) {
+        DataSnapshot snapShot = mValues.get(position);
+        return snapShot.getValue(Chat.class);
     }
 
     @Override
