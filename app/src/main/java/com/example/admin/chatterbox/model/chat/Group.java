@@ -12,6 +12,7 @@ public class Group {
     String title;
     String image;
     User admin;
+    long id;
 
     public Group() {
     }
@@ -62,5 +63,13 @@ public class Group {
 
     public void setAdmin(User admin) {
         this.admin = admin;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
