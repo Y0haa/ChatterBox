@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.admin.chatterbox.R;
-import com.example.admin.chatterbox.view.creategroup.CreateGroupActivity;
+import com.example.admin.chatterbox.view.creategroupactivity.CreateGroupActivity;
 import com.example.admin.chatterbox.view.joingroup.JoinGroup;
 
 public class MainActivity extends AppCompatActivity {

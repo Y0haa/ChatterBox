@@ -1,4 +1,4 @@
-package com.example.admin.chatterbox.view.creategroup;
+package com.example.admin.chatterbox.view.creategroupactivity;
 
 
 

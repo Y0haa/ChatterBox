@@ -16,6 +16,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".view.mainactivity.MainActivity"></activity>
         <activity android:name=".view.groupactivity.GroupActivity"></activity>
+        <activity android:name=".view.creategroupactivity.CreateGroupActivity"></activity>
 
 
         <meta-data

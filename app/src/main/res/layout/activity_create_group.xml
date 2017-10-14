@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.admin.chatterbox.view.creategroup.CreateGroupActivity">
+    tools:context="com.example.admin.chatterbox.view.creategroupactivity.CreateGroupActivity">
 
 
     <TextView

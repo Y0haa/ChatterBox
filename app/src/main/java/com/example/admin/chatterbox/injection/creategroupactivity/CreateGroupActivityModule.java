@@ -1,6 +1,6 @@
 package com.example.admin.chatterbox.injection.creategroupactivity;
 
-import com.example.admin.chatterbox.view.creategroup.CreateGroupActivityPresenter;
+import com.example.admin.chatterbox.view.creategroupactivity.CreateGroupActivityPresenter;
 
 import dagger.Module;
 import dagger.Provides;
