@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public class User {
-    int id;
+    String id;
     String name, username, email, phoneNumber;
     List<Group> createdGroups, joinedGroups;
     List<User> contacts;
@@ -15,7 +15,8 @@ public class User {
     public User() {
     }
 
-    public User(String name, String username, String email, String phoneNumber, List<Group> createdGroups, List<Group> joinedGroups, List<User> contacts) {
+    public User(String id, String name, String username, String email, String phoneNumber, List<Group> createdGroups, List<Group> joinedGroups, List<User> contacts) {
+        this.id = id;
         this.name = name;
         this.username = username;
         this.email = email;
@@ -25,11 +26,11 @@ public class User {
         this.contacts = contacts;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
