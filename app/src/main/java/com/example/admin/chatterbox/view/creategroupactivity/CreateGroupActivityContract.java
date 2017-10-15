@@ -11,12 +11,12 @@ import com.example.admin.chatterbox.BaseView;
 public interface CreateGroupActivityContract {
 
     interface View extends BaseView {
-        void updateView(String groupNameAndPassword);
+        void updateView(String groupName);
 
 
     }
     interface Presenter extends BasePresenter<CreateGroupActivityContract.View> {
-        void validateGroupNameAndPassword(String groupName, String groupPassword);
+        void validateGroupName(String uid, String groupName);
 
     }
 }

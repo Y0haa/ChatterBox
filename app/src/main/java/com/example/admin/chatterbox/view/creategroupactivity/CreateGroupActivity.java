@@ -7,10 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.creategroupactivity.DaggerCreateGroupActivityComponent;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import javax.inject.Inject;
 
@@ -20,14 +23,15 @@ import butterknife.ButterKnife;
 public class CreateGroupActivity extends AppCompatActivity implements CreateGroupActivityContract.View {
 
     private static final String TAG = "CreateGroupActivity";
+    private String uid;
+    private FirebaseDatabase database;
+    private DatabaseReference myRefUsers;
     @Inject
     CreateGroupActivityPresenter presenter;
     @BindView(R.id.tvOutputString)
     TextView tvOutputString;
     @BindView(R.id.etInputGroupName)
     EditText etInputGroupName;
-    @BindView(R.id.etInputGroupPassword)
-    EditText etInputGroupPassword;
     @BindView(R.id.btnCreateGroup)
     Button btnCreateGroup;
 
@@ -35,6 +39,25 @@ public class CreateGroupActivity extends AppCompatActivity implements CreateGrou
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
+
+
+        //-------------
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            uid = user.getUid();
+
+           // tvOutputString.setText(uid.toString());
+            Log.d(TAG, "onCreate: "+uid);
+         //   Toast.makeText(this, ""+user.getUid(), Toast.LENGTH_SHORT).show();
+        }
+        database = FirebaseDatabase.getInstance();
+        myRefUsers = database.getReference("Groups");
+
+
+
+
+        //---------
+
 
         ButterKnife.bind(this);
         setupDaggerComponent();
@@ -51,14 +74,14 @@ public class CreateGroupActivity extends AppCompatActivity implements CreateGrou
     }
 
     public void createGroupClicks(View view) {
-        Toast.makeText(this, "Clicking", Toast.LENGTH_SHORT).show();
-        presenter.validateGroupNameAndPassword(etInputGroupName.getText().toString(), etInputGroupPassword.getText().toString());
+        Log.d(TAG, "createGroupClicks: "+ uid.toString());
+        presenter.validateGroupName(uid, etInputGroupName.getText().toString());
 
 
     }
 
     @Override
-    public void updateView(String str) {
-        tvOutputString.setText(str);
+    public void updateView(String createdGroupStatus) {
+        tvOutputString.setText(createdGroupStatus);
     }
 }

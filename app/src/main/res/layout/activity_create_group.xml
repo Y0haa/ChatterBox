@@ -23,12 +23,6 @@
         android:layout_height="wrap_content"
         android:hint="Group Name" />
 
-    <EditText
-        android:id="@+id/etInputGroupPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword" />
     <Button
         android:text="Create Group"
         android:id="@+id/btnCreateGroup"
