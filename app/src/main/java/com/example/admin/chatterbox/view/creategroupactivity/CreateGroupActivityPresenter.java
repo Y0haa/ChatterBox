@@ -48,17 +48,19 @@ public class CreateGroupActivityPresenter implements CreateGroupActivityContract
         group.setTitle(groupName);
         group.setAdmin(user);
 
+        String id = myRefUsers.child("Groups").push().getKey();
 
-        Log.d(TAG, "onSuccess: " +myRefUsers.child("Groups").push().getKey() );
+
+        Log.d(TAG, "onSuccess: " + id);
 
         myRefUsers
                 // .child(uid)
                 // .child("groupCreated")
-                .push()
+                .child(id)
                 .setValue(group)
 
         ;
-        Log.d(TAG, "onSuccess: " +myRefUsers.child("Groups").push().getKey() );
+        //Log.d(TAG, "onSuccess: " +myRefUsers.child("Groups").push().getKey() );
       //  Log.d(TAG, "validateGroupName: " + myRefUsers.child("Groups").getRef().push().getKey());
         //var name = snapshot.name();
        // var newRef = myDataRef.push(...);

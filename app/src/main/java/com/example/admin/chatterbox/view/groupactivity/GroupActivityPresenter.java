@@ -28,7 +28,7 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
     @Override
     public void sendMessage(String id, String msg, User owner, Long time) {
         Chat chat = new Chat(msg,owner,time);
-        databaseReference.child("groups").child("id").push().setValue(chat);
+        databaseReference.child("groups").child(id).push().setValue(chat);
         view.updateInputMsg();
     }
 
