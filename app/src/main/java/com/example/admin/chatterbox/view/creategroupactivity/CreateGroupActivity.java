@@ -1,5 +1,6 @@
 package com.example.admin.chatterbox.view.creategroupactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.creategroupactivity.DaggerCreateGroupActivityComponent;
+import com.example.admin.chatterbox.view.groupactivity.GroupActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -81,7 +83,11 @@ public class CreateGroupActivity extends AppCompatActivity implements CreateGrou
     }
 
     @Override
-    public void updateView(String createdGroupStatus) {
-        tvOutputString.setText(createdGroupStatus);
+    public void updateView(String groupToken) {
+        tvOutputString.setText(groupToken);
+        Intent groupActivityIntent = new Intent(this, GroupActivity.class);
+        groupActivityIntent.putExtra("ID", groupToken);
+        startActivity(groupActivityIntent);
+
     }
 }

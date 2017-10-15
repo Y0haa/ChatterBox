@@ -60,20 +60,12 @@ public class CreateGroupActivityPresenter implements CreateGroupActivityContract
                 .setValue(group)
 
         ;
-        //Log.d(TAG, "onSuccess: " +myRefUsers.child("Groups").push().getKey() );
-      //  Log.d(TAG, "validateGroupName: " + myRefUsers.child("Groups").getRef().push().getKey());
-        //var name = snapshot.name();
-       // var newRef = myDataRef.push(...);
-        //var newID = newRef.name();
-        /*
-        Log.d(TAG, "onSuccess: " +myRefUsers.getKey() );
-        Log.d(TAG, "onSuccess: " +myRefUsers.child("Groups").getRef().getKey() );
-        Log.d(TAG, "onSuccess: " +myRefUsers.child("Groups").getParent().getKey() );
-*/
+
+
 
         //-------------------------------
 
         //String outputString =groupName ;
-        view.updateView(groupName);
+        view.updateView(id);
     }
 }
