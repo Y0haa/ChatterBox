@@ -13,10 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.admin.chatterbox.R;
+import com.example.admin.chatterbox.injection.loginactivity.DaggerLoginActivityComponent;
 import com.example.admin.chatterbox.util.UserAccountHelper;
 import com.example.admin.chatterbox.view.loginactivity.MainLoginContract;
 import com.example.admin.chatterbox.view.loginactivity.MainLoginPresenter;
@@ -33,31 +35,45 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainRegisterActivity extends AppCompatActivity implements View.OnClickListener, MainLoginContract.View, GoogleApiClient.OnConnectionFailedListener {
 
-    private FirebaseAuth mAuth;
-
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private EditText mConfirmPasswordView;
-
-    CallbackManager callbackManager;
-    LoginButton loginButton;
-
-    private GoogleApiClient mGoogleApiClient;
-
-    private MainLoginContract.UserActionsListener mActionsListener;
-
-    // Constants
     public static final String CHAT_PREFS = "ChatPrefs";
     public static final String DISPLAY_NAME_KEY = "username";
     private static final int RC_SIGN_IN = 9002;
+
+    private FirebaseAuth mAuth;
+    CallbackManager callbackManager;
+    private GoogleApiClient mGoogleApiClient;
+
+    @BindView(R.id.register_email)
+    AutoCompleteTextView mEmailView;
+    @BindView(R.id.register_password)
+    EditText mPasswordView;
+    @BindView(R.id.register_confirm_password)
+    EditText mConfirmPasswordView;
+    @BindView(R.id.login_button)
+    LoginButton loginButton;
+    @BindView(R.id.sign_in_button)
+    SignInButton signInButton;
+    @BindView(R.id.sign_out_button)
+    Button signOutButton;
+    @BindView(R.id.disconnect_button)
+    Button disconnectButton;
+
+    @Inject
+    MainLoginPresenter mActionsListener;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -76,9 +92,10 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_main_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        ButterKnife.bind(this);
 
         mAuth = FirebaseAuth.getInstance();
-        mActionsListener = new MainLoginPresenter(this);
+        setupDagger();
 
         standardLogin();
         facebookLogin();
@@ -86,11 +103,9 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        Log.d("TAG", "onStart: " + currentUser.getDisplayName());
+    private void setupDagger() {
+        DaggerLoginActivityComponent.create().inject(this);
+        mActionsListener.attacheView(this);
     }
 
     @Override
@@ -156,19 +171,14 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void googleLogin() {
-        // Button listeners
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
+        signInButton.setOnClickListener(this);
+        signOutButton.setOnClickListener(this);
+        disconnectButton.setOnClickListener(this);
 
-        // [START config_signin]
-
-        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        // [END config_signin]
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
@@ -188,7 +198,6 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         String confirmationPassword = mConfirmPasswordView.getText().toString();
-
 
         boolean cancel = false;
         View focusView = null;
@@ -233,7 +242,7 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void saveDisplayName(String user) {
-        String displayName = user;//mUsernameView.getText().toString();
+        String displayName = user;
         SharedPreferences prefs = getSharedPreferences(CHAT_PREFS, 0);
         prefs.edit().putString(DISPLAY_NAME_KEY, displayName).apply();
     }
@@ -295,15 +304,11 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
-
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
-
     }
-
 }

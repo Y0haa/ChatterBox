@@ -24,11 +24,19 @@ import static com.example.admin.chatterbox.util.CurrentStoredUser.generateUserBa
 public class MainLoginPresenter implements MainLoginContract.UserActionsListener {
 
     private FirebaseAuth mAuth;
-    private final MainLoginContract.View mRegisterActivityView;
+    private MainLoginContract.View mRegisterActivityView;
 
     public MainLoginPresenter(MainLoginContract.View mRegisterActivityView) {
         this.mRegisterActivityView = mRegisterActivityView;
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    public MainLoginPresenter() {
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    public void attacheView(MainLoginContract.View mRegisterActivityView) {
+        this.mRegisterActivityView = mRegisterActivityView;
     }
 
     @Override

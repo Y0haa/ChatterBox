@@ -12,11 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.chatterbox.R;
+import com.example.admin.chatterbox.injection.loginactivity.DaggerLoginActivityComponent;
 import com.example.admin.chatterbox.view.loginactivity.MainLoginContract;
 import com.example.admin.chatterbox.view.loginactivity.MainLoginPresenter;
 import com.example.admin.chatterbox.view.mainactivity.MainActivity;
@@ -32,28 +35,45 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainSignInActivity extends AppCompatActivity implements View.OnClickListener, MainLoginContract.View, GoogleApiClient.OnConnectionFailedListener {
 
-    private FirebaseAuth mAuth;
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-
-    CallbackManager callbackManager;
-    LoginButton loginButton;
-
-    // Constants
     public static final String CHAT_PREFS = "ChatPrefs";
     public static final String DISPLAY_NAME_KEY = "username";
     private static final int RC_SIGN_IN = 9002;
-    private MainLoginContract.UserActionsListener mActionsListener;
 
+    private FirebaseAuth mAuth;
+    CallbackManager callbackManager;
     private GoogleApiClient mGoogleApiClient;
+
+    @BindView(R.id.login_email)
+    AutoCompleteTextView mEmailView;
+    @BindView(R.id.login_password)
+    EditText mPasswordView;
+    @BindView(R.id.login_button)
+    LoginButton loginButton;
+    @BindView(R.id.sign_in_button)
+    SignInButton signInButton;
+    @BindView(R.id.sign_out_button)
+    Button signOutButton;
+    @BindView(R.id.disconnect_button)
+    Button disconnectButton;
+    @BindView(R.id.sign_out_and_disconnect)
+    LinearLayout signoutAnddisconnectButton;
+
+    @Inject
+    MainLoginPresenter mActionsListener;
 
 
     @Override
@@ -73,19 +93,20 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_main_sign_in);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        ButterKnife.bind(this);
 
 
         mAuth = FirebaseAuth.getInstance();
-        mActionsListener = new MainLoginPresenter(this);
-
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.login_email);
-        mPasswordView = (EditText) findViewById(R.id.login_password);
+        setupDagger();
 
         standardLogin();
         facebookLogin();
         googleLogin();
+    }
 
-
+    private void setupDagger() {
+        DaggerLoginActivityComponent.create().inject(this);
+        mActionsListener.attacheView(this);
     }
 
     @Override
@@ -147,19 +168,15 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void googleLogin() {
-        // Button listeners
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
 
-        // [START config_signin]
+        signInButton.setOnClickListener(this);
+        signOutButton.setOnClickListener(this);
+        disconnectButton.setOnClickListener(this);
 
-        // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        // [END config_signin]
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
@@ -199,7 +216,7 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void saveDisplayName(String user) {
-        String displayName = user;//mUsernameView.getText().toString();
+        String displayName = user;
         SharedPreferences prefs = getSharedPreferences(CHAT_PREFS, 0);
         prefs.edit().putString(DISPLAY_NAME_KEY, displayName).apply();
     }
@@ -261,13 +278,12 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
     private void updateUI(FirebaseUser user) {
         if (user != null) {
 
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            signInButton.setVisibility(View.GONE);
+            disconnectButton.setVisibility(View.VISIBLE);
         } else {
 
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+            signInButton.setVisibility(View.VISIBLE);
+            signoutAnddisconnectButton.setVisibility(View.GONE);
         }
-
     }
 }
