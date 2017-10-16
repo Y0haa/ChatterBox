@@ -31,6 +31,8 @@
     <string name="title_activity_main_login">Sign in</string>
     <string name="create_account">CREATE ACCOUNT</string>
     <string name="log_in">LOG IN</string>
+    <string name="already_a_user">Already a user?</string>
+    <string name="or_with">or with</string>
 
 
 </resources>

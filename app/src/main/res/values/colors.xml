@@ -11,4 +11,11 @@
     <color name="light_purple">#E8E1E7</color>
     <color name="light_green">#50d050</color>
     <color name="dark_green">#008000</color>
+
+    <color name="dark_blue">#5680E9</color>
+    <color name="soft_blue">#84CEEB</color>
+    <color name="blue">#5AB9EA</color>
+    <color name="gray">#C1C8E4</color>
+    <color name="purple">#8860D0</color>
+
 </resources>

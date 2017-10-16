@@ -311,4 +311,6 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
     }
+
+
 }
