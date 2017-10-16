@@ -4,7 +4,6 @@ package com.example.admin.chatterbox.view.groupactivity;
 import com.example.admin.chatterbox.BasePresenter;
 import com.example.admin.chatterbox.BaseView;
 import com.example.admin.chatterbox.model.chat.Group;
-import com.example.admin.chatterbox.model.chat.User;
 import com.google.firebase.database.DatabaseReference;
 
 /**
@@ -20,7 +19,7 @@ public interface GroupActivityContract {
 
     interface Presenter extends BasePresenter<View> {
 
-        void sendMessage(String id, String msg, User owner, Long time);
+        void sendMessage(String id, String msg, String owner, String ownerId, Long time);
         DatabaseReference getDatabaseReference();
         Group getGroup(String id);
 

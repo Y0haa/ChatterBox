@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.groupactivity.DaggerGroupActivityComponent;
 import com.example.admin.chatterbox.model.chat.Chat;
-import com.example.admin.chatterbox.model.chat.User;
+import com.example.admin.chatterbox.util.CurrentStoredUser;
 
 import javax.inject.Inject;
 
@@ -60,10 +60,14 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     protected void onStart() {
         super.onStart();
         if (mColumnCount <= 1) {
-            rvChat.setLayoutManager(new LinearLayoutManager(this));
+            LinearLayoutManager llm = new LinearLayoutManager(this);
+            //llm.setReverseLayout(true);
+            llm.setStackFromEnd(true);
+            rvChat.setLayoutManager(llm);
         } else {
             rvChat.setLayoutManager(new GridLayoutManager(this, mColumnCount));
         }
+
         rvChat.setAdapter(mAdapter);
     }
 
@@ -80,8 +84,10 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     public void onViewClicked() {
         String msg = etMsg.getText().toString();
         if (msg.length() > 0) {
-            presenter.sendMessage(id, msg, new User(), 0l);
+            presenter.sendMessage(id, msg, CurrentStoredUser.getInstance().getUser().getName(),
+                    CurrentStoredUser.getInstance().getUser().getId(), 0l);
         }
+        rvChat.scrollToPosition(rvChat.getAdapter().getItemCount()-1);
     }
 
     @Override

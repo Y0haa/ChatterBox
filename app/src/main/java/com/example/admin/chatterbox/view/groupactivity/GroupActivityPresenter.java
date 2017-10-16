@@ -2,7 +2,6 @@ package com.example.admin.chatterbox.view.groupactivity;
 
 import com.example.admin.chatterbox.model.chat.Chat;
 import com.example.admin.chatterbox.model.chat.Group;
-import com.example.admin.chatterbox.model.chat.User;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,9 +25,9 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
     }
 
     @Override
-    public void sendMessage(String id, String msg, User owner, Long time) {
-        Chat chat = new Chat(msg,owner,time);
-        databaseReference.child("groups").child(id).push().setValue(chat);
+    public void sendMessage(String id, String msg, String owner, String ownerId, Long time) {
+        Chat chat = new Chat(msg,owner,ownerId, time);
+        databaseReference.child("Groups").child(id).child("messages").push().setValue(chat);
         view.updateInputMsg();
     }
 

@@ -1,6 +1,7 @@
 package com.example.admin.chatterbox.view.groupactivity;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerViewAdapter.ViewHolder>{
 
+    private static final String TAG = "RecyclerViewTag";
     private final List<DataSnapshot> mValues;
     private final OnListInteractionListener mListener;
     private final DatabaseReference databaseReference;
@@ -25,6 +27,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Log.d(TAG, "onChildAdded: added");
             mValues.add(dataSnapshot);
             notifyDataSetChanged();
         }
@@ -52,8 +55,9 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     public ChatRecyclerViewAdapter(String id, DatabaseReference databaseReference, OnListInteractionListener listener) {
         groupId = id;
-        this.databaseReference = databaseReference.child("groups").child(id);
-        databaseReference.addChildEventListener(childEventListener);
+        this.databaseReference = databaseReference.child("Groups").child(id).child("messages");
+        Log.d(TAG, "ChatRecyclerViewAdapter: " +databaseReference.toString());
+        this.databaseReference.addChildEventListener(childEventListener);
         mValues = new ArrayList<>();
         mListener = listener;
     }
@@ -68,8 +72,12 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = getItem(position);
-        holder.tvAuthor.setText(holder.mItem.getOwner().getUsername());
-        holder.tvMsg.setText(holder.mItem.getPost());
+        if(holder.mItem != null) {
+            if(holder.mItem.getOwner() != null) {
+                holder.tvAuthor.setText(holder.mItem.getOwner());
+            }
+            holder.tvMsg.setText(holder.mItem.getPost());
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +93,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     private Chat getItem(int position) {
         DataSnapshot snapShot = mValues.get(position);
+        Log.d(TAG, "getItem: " + snapShot.toString());
         return snapShot.getValue(Chat.class);
     }
 

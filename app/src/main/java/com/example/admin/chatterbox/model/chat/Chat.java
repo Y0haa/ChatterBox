@@ -1,22 +1,22 @@
 package com.example.admin.chatterbox.model.chat;
 
-import java.util.List;
-
 /**
  * Created by admin on 10/10/2017.
  */
 
 public class Chat {
     String post;
-    User owner;
+    String owner;
+    String ownerId;
     Long time;
 
     public Chat() {
     }
 
-    public Chat(String post, User owner, Long time) {
+    public Chat(String post, String owner, String id, Long time) {
         this.post = post;
         this.owner = owner;
+        ownerId = id;
         this.time = time;
     }
 
@@ -28,11 +28,11 @@ public class Chat {
         this.post = post;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
