@@ -30,6 +30,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
             Log.d(TAG, "onChildAdded: added");
             mValues.add(dataSnapshot);
             notifyDataSetChanged();
+            mListener.onListUpdate();
         }
 
         @Override
@@ -123,5 +124,6 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     interface OnListInteractionListener{
         void OnListInteraction(Chat mItem);
+        void onListUpdate();
     }
 }

@@ -87,12 +87,17 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
             presenter.sendMessage(id, msg, CurrentStoredUser.getInstance().getUser().getName(),
                     CurrentStoredUser.getInstance().getUser().getId(), 0l);
         }
-        rvChat.scrollToPosition(rvChat.getAdapter().getItemCount()-1);
+
     }
 
     @Override
     public void OnListInteraction(Chat mItem) {
 
+    }
+
+    @Override
+    public void onListUpdate() {
+        rvChat.scrollToPosition(rvChat.getAdapter().getItemCount()-1);
     }
 
     @Override
@@ -103,5 +108,6 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     @Override
     public void updateInputMsg() {
         etMsg.setText("");
+        rvChat.scrollToPosition(rvChat.getAdapter().getItemCount()-1);
     }
 }
