@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.chatterbox.R;
@@ -107,6 +108,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         public final View mView;
         public final TextView tvAuthor;
         public final TextView tvMsg;
+        private final ImageView ivImage;
         public Chat mItem;
 
         public ViewHolder(View view) {
@@ -114,6 +116,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
             mView = view;
             tvAuthor = (TextView) view.findViewById(R.id.tvAuthor);
             tvMsg = (TextView) view.findViewById(R.id.tvMessage);
+            ivImage = view.findViewById(R.id.ivAuthorImg);
         }
 
         @Override
