@@ -1,15 +1,18 @@
 package com.example.admin.chatterbox.view.groupactivity;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.model.chat.Chat;
+import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -74,10 +77,28 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = getItem(position);
+
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
+
         if(holder.mItem != null) {
             if(holder.mItem.getOwner() != null) {
+                Log.d(TAG, "onBindViewHolder: " + CurrentStoredUser.getInstance().getUser().getName());
+                if(holder.mItem.getOwner().compareTo(CurrentStoredUser.getInstance().getUser().getName()) == 0) {
+                    holder.tvMsg.setBackgroundResource(R.drawable.me_speechbubble);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    }
+                }else{
+                    holder.tvMsg.setBackgroundResource(R.drawable.you_speechbubble);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                        lp.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    }
+                }
                 holder.tvAuthor.setText(holder.mItem.getOwner());
             }
+            holder.tvMsg.setLayoutParams(lp);
             holder.tvMsg.setText(holder.mItem.getPost());
         }
 
