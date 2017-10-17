@@ -5,17 +5,9 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:layout_width="100sp"
-        android:layout_height="100sp"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
         android:id="@+id/ivAuthorImg"/>
-
-    <TextView
-        android:id="@+id/tvAuthor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:layout_toRightOf="@+id/ivAuthorImg"
-        android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
         android:id="@+id/tvMessage"
@@ -24,7 +16,8 @@
         android:textAppearance="?attr/textAppearanceListItem"
         android:gravity="right"
         android:text="@string/sample_message"
-        android:layout_margin="@dimen/text_margin"
-        android:layout_below="@+id/tvAuthor" />
+        android:layout_toRightOf="@+id/ivAuthorImg"
+        android:background="@drawable/you_speechbubble"
+        android:textColor="@color/white"/>
 
 </RelativeLayout>

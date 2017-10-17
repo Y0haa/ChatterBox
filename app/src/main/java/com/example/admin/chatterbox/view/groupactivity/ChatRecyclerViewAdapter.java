@@ -79,7 +79,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         holder.mItem = getItem(position);
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
-
+        String message = "";
         if(holder.mItem != null) {
             if(holder.mItem.getOwner() != null) {
                 Log.d(TAG, "onBindViewHolder: " + CurrentStoredUser.getInstance().getUser().getName());
@@ -88,18 +88,23 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        lp.removeRule(RelativeLayout.RIGHT_OF);
                     }
                 }else{
                     holder.tvMsg.setBackgroundResource(R.drawable.you_speechbubble);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                         lp.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        lp.addRule(RelativeLayout.RIGHT_OF,R.id.ivAuthorImg);
+                        message = holder.mItem.getOwner() + "\n";
                     }
                 }
-                holder.tvAuthor.setText(holder.mItem.getOwner());
+
+                //holder.tvAuthor.setText(holder.mItem.getOwner());
             }
             holder.tvMsg.setLayoutParams(lp);
-            holder.tvMsg.setText(holder.mItem.getPost());
+            message += holder.mItem.getPost();
+            holder.tvMsg.setText(message);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +132,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView tvAuthor;
+        //public final TextView tvAuthor;
         public final TextView tvMsg;
         private final ImageView ivImage;
         public Chat mItem;
@@ -135,8 +140,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            tvAuthor = (TextView) view.findViewById(R.id.tvAuthor);
-            tvMsg = (TextView) view.findViewById(R.id.tvMessage);
+            //tvAuthor = view.findViewById(R.id.tvAuthor);
+            tvMsg = view.findViewById(R.id.tvMessage);
             ivImage = view.findViewById(R.id.ivAuthorImg);
         }
 
