@@ -2,12 +2,15 @@ package com.example.admin.chatterbox.view.loginactivity.mainlogin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.util.CurrentStoredUser;
@@ -64,6 +67,10 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     protected void onStart() {
         super.onStart();
+
+        reproduceVideo();
+
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
             Log.d("TAG", "onStart: " + currentUser.getDisplayName());
@@ -122,4 +129,24 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+    private void reproduceVideo() {
+        VideoView mVideoView;
+
+        mVideoView = (VideoView) findViewById(R.id.bgVideoView);
+
+        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.landscape);
+
+        mVideoView.setVideoURI(uri);
+        mVideoView.start();
+
+        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.setLooping(true);
+            }
+        });
+    }
+
+
 }
