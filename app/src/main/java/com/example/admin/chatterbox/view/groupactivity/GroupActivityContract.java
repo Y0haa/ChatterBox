@@ -24,6 +24,8 @@ public interface GroupActivityContract {
         Group getGroup(String id);
 
         void findDatabaseReference();
+
+
     }
 
 }
