@@ -1,6 +1,7 @@
 package com.example.admin.chatterbox.view.groupactivity;
 
 import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -87,15 +88,19 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                     holder.tvMsg.setBackgroundResource(R.drawable.me_speechbubble);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                        holder.ivImage.setVisibility(ImageView.INVISIBLE);
                         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lp.removeRule(RelativeLayout.RIGHT_OF);
+                        holder.cvImg.setVisibility(CardView.INVISIBLE);
                     }
                 }else{
                     holder.tvMsg.setBackgroundResource(R.drawable.you_speechbubble);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                        holder.ivImage.setVisibility(ImageView.VISIBLE);
+                        holder.cvImg.setVisibility(CardView.VISIBLE);
                         lp.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                        lp.addRule(RelativeLayout.RIGHT_OF,R.id.ivAuthorImg);
+                        lp.addRule(RelativeLayout.RIGHT_OF,R.id.cvAuthorImg);
                         message = holder.mItem.getOwner() + "\n";
                     }
                 }
@@ -136,10 +141,12 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         public final TextView tvMsg;
         private final ImageView ivImage;
         public Chat mItem;
+        private final CardView cvImg;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            cvImg = view.findViewById(R.id.cvAuthorImg);
             //tvAuthor = view.findViewById(R.id.tvAuthor);
             tvMsg = view.findViewById(R.id.tvMessage);
             ivImage = view.findViewById(R.id.ivAuthorImg);

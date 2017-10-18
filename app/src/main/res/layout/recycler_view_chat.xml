@@ -2,22 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
-    <ImageView
-        android:layout_width="50sp"
-        android:layout_height="50sp"
-        android:id="@+id/ivAuthorImg"/>
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvAuthorImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        android:thicknessRatio="1.9"
+        app:cardCornerRadius="40dp">
+
+        <ImageView
+            android:id="@+id/ivAuthorImg"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/shotgunsamurai" />
+
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem"
+        android:layout_toRightOf="@+id/cvAuthorImg"
+        android:background="@drawable/you_speechbubble"
         android:gravity="right"
         android:text="@string/sample_message"
-        android:layout_toRightOf="@+id/ivAuthorImg"
-        android:background="@drawable/you_speechbubble"
-        android:textColor="@color/white"/>
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

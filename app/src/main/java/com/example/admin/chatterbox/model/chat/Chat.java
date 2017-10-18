@@ -9,6 +9,7 @@ public class Chat {
     String owner;
     String ownerId;
     Long time;
+    String ownerImg;
 
     public Chat() {
     }
