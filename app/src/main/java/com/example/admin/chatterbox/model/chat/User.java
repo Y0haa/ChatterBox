@@ -1,5 +1,7 @@
 package com.example.admin.chatterbox.model.chat;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 /**
@@ -11,11 +13,13 @@ public class User {
     String name, username, email, phoneNumber;
     List<Group> createdGroups, joinedGroups;
     List<User> contacts;
+    Bitmap userImage;
 
     public User() {
     }
 
-    public User(String id, String name, String username, String email, String phoneNumber, List<Group> createdGroups, List<Group> joinedGroups, List<User> contacts) {
+    public User(String id, String name, String username, String email, String phoneNumber,
+                List<Group> createdGroups, List<Group> joinedGroups, List<User> contacts, Bitmap userImage) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -24,6 +28,7 @@ public class User {
         this.createdGroups = createdGroups;
         this.joinedGroups = joinedGroups;
         this.contacts = contacts;
+        this.userImage = userImage;
     }
 
     public String getId() {
@@ -88,5 +93,13 @@ public class User {
 
     public void setContacts(List<User> contacts) {
         this.contacts = contacts;
+    }
+
+    public Bitmap getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(Bitmap userImage) {
+        this.userImage = userImage;
     }
 }
