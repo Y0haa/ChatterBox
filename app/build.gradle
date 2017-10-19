@@ -54,6 +54,8 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.sd6352051.niftydialogeffects:niftydialogeffects:1.0.0@aar'
 
+    compile 'com.github.bumptech.glide:glide:4.0.0'
+
     //Firebase Storage
     compile 'com.google.firebase:firebase-storage:10.0.1'
 }
