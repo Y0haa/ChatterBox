@@ -91,11 +91,15 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     @OnClick(R.id.btnSend)
     public void onViewClicked() {
         String msg = etMsg.getText().toString();
+        msg = msg.trim();
         if (msg.length() > 0) {
-            presenter.sendMessage(id, msg, CurrentStoredUser.getInstance().getUser().getName(),
-                    CurrentStoredUser.getInstance().getUser().getId(), 0l);
+            if (msg.charAt(0) == '/') {
+                presenter.checkCommand(msg);
+            } else {
+                presenter.sendMessage(id, msg, CurrentStoredUser.getInstance().getUser().getName(),
+                        CurrentStoredUser.getInstance().getUser().getId(), 0l);
+            }
         }
-
     }
     @OnClick(R.id.btnSendFile)
     public void onSendFileCliked(){
@@ -123,6 +127,11 @@ uploadDialog();
     public void updateInputMsg() {
         etMsg.setText("");
         rvChat.scrollToPosition(rvChat.getAdapter().getItemCount() - 1);
+    }
+
+    @Override
+    public void sendSystemMsg(String msg) {
+        mAdapter.addSystemMsg(msg);
     }
 
     public void uploadDialog(){

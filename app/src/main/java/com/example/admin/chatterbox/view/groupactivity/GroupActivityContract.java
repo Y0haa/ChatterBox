@@ -15,6 +15,8 @@ public interface GroupActivityContract {
     interface View extends BaseView {
 
         void updateInputMsg();
+
+        void sendSystemMsg(String msg);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -26,6 +28,7 @@ public interface GroupActivityContract {
         void findDatabaseReference();
 
 
+        void checkCommand(String msg);
     }
 
 }

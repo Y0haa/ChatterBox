@@ -26,6 +26,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     private static final String TAG = "RecyclerViewTag";
     private final List<DataSnapshot> mValues;
+    private final List<Chat> chats;
     private final OnListInteractionListener mListener;
     private final DatabaseReference databaseReference;
     private final String groupId;
@@ -33,7 +34,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             Log.d(TAG, "onChildAdded: added");
-            mValues.add(dataSnapshot);
+            //mValues.add(dataSnapshot);
+            chats.add(dataSnapshot.getValue(Chat.class));
             notifyDataSetChanged();
             mListener.onListUpdate();
         }
@@ -65,6 +67,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         Log.d(TAG, "ChatRecyclerViewAdapter: " +databaseReference.toString());
         this.databaseReference.addChildEventListener(childEventListener);
         mValues = new ArrayList<>();
+        chats = new ArrayList<>();
         mListener = listener;
     }
 
@@ -77,7 +80,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = getItem(position);
+        //holder.mItem = getItem(position);
+        holder.mItem = chats.get(position);
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
         String message = "";
@@ -132,7 +136,14 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return chats.size();
+    }
+
+    public void addSystemMsg(String msg) {
+        Chat chat = new Chat(msg, CurrentStoredUser.getInstance().getUser().getName(), "0", 0l);
+        chats.add(chat);
+        notifyDataSetChanged();
+        mListener.onListUpdate();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
