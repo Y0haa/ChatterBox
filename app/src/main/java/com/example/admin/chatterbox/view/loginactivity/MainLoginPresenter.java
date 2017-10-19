@@ -9,18 +9,24 @@ import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.admin.chatterbox.util.CurrentStoredUser.generateUserBaseOnAuthObject;
 
@@ -93,7 +99,34 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
     }
 
     @Override
-    public void updateFirebaseUser(User user, String password) {
+    public void updateFirebaseUser(final User user, String password) {
+
+
+        DatabaseReference mDatabaseReference;
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = mDatabaseReference.child("users").orderByChild("id").equalTo(user.getId());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // dataSnapshot is the "issue" node with all children with id 0
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        // do something with the individual "issues"
+                        Log.d("TAG", "onDataChange: " + issue.getKey());
+                        updateAuthUser(user);
+                        updateDBUser(issue.getKey(), user);
+                    }
+                }else{
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         /*FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
@@ -138,6 +171,8 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
        // mDatabaseReference.updateChildren(childUpdates);
 */
     }
+
+
 
     @Override
     public void handleFacebookAccessToken(AccessToken token) {
@@ -211,5 +246,59 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
             }
         });
     }
+
+    private void updateAuthUser(User user) {
+
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(user.getUsername())
+                .build();
+
+        firebaseUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TAG", "User profile updated.");
+                        }
+                    }
+                });
+
+        firebaseUser.updateEmail(user.getEmail()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("TAG", "onSuccess: ");
+            }
+        });
+
+    }
+
+    private void updateDBUser(String uid, final User user) {
+
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", user.getId());
+        result.put("email", user.getEmail());
+        result.put("name", user.getName());
+        result.put("phoneNumber", user.getPhoneNumber());
+        result.put("username", user.getUsername());
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/users/" + uid, result);
+
+        mDatabaseReference.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                CurrentStoredUser.updateUserBaseOnUserDB(user);
+            }
+        });
+
+
+    }
+
+
+
 
 }

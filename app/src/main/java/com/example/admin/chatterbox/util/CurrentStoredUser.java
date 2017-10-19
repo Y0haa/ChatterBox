@@ -64,4 +64,15 @@ public class CurrentStoredUser {
             Log.d("TAG", "generateUserBaseOnAuthObject: " + "User not generated. Auth is empty");
         }
     }
+
+    public static void updateUserBaseOnUserDB(User user) {
+
+        try {
+
+            CurrentStoredUser.getInstance().setUser(user);
+
+        }catch(Exception e){
+            Log.d("TAG", "generateUserBaseOnAuthObject: " + "User not generated. Auth is empty");
+        }
+    }
 }
