@@ -1,5 +1,6 @@
 package com.example.admin.chatterbox.view.loginactivity;
 
+import com.example.admin.chatterbox.model.chat.User;
 import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
@@ -20,6 +21,7 @@ public interface MainLoginContract {
         void firebaseAuthWithGoogle(GoogleSignInAccount acct);
 
         void signinFirebaseUser(String emailUser, String passwordUser);
+        void updateFirebaseUser(User user, String password);
     }
 
 }

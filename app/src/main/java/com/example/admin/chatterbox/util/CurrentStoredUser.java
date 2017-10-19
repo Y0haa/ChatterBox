@@ -5,7 +5,6 @@ import android.util.Log;
 import com.example.admin.chatterbox.model.chat.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by Admin on 10/13/2017.
@@ -53,8 +52,12 @@ public class CurrentStoredUser {
             user.setPhoneNumber("not setting yet");
             user.setId(mAuth.getCurrentUser().getUid());
 
+
+
+/*
             mDatabaseReference = FirebaseDatabase.getInstance().getReference();
             mDatabaseReference.child("users").push().setValue(user);
+*/
 
 
         }catch(Exception e){

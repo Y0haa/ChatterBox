@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.mainactivity.MainActivity" />
+
+        <activity android:name=".view.mainactivity.MainActivity"/>
         <activity android:name=".view.groupactivity.GroupActivity" />
         <activity android:name=".view.creategroupactivity.CreateGroupActivity" />
 

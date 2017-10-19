@@ -87,7 +87,6 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void callNextActivity() {
         Intent intent = new Intent(MainLoginActivity.this, MainActivity.class);
-        finish();
         startActivity(intent);
     }
 

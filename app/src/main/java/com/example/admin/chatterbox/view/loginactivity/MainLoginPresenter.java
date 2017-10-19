@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.admin.chatterbox.model.chat.User;
 import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -14,6 +15,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import static com.example.admin.chatterbox.util.CurrentStoredUser.generateUserBaseOnAuthObject;
 
@@ -46,19 +53,20 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener((Activity) mRegisterActivityView,
                 new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d("Chat", "createUser onComplete: " + task.isSuccessful());
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d("Chat", "createUser onComplete: " + task.isSuccessful());
 
-                if (!task.isSuccessful()) {
-                    Log.d("Chat", "user creation failed: ");
-                    mRegisterActivityView.showDialog("Oops", "Registration attemp failed");
-                } else {
-                    generateUserBaseOnAuthObject(mAuth);
-                    mRegisterActivityView.userSuccessful(CurrentStoredUser.getInstance().getUser().getEmail());
-                }
-            }
-        });
+                        if (!task.isSuccessful()) {
+                            Log.d("Chat", "user creation failed: ");
+                            mRegisterActivityView.showDialog("Oops", "Registration attemp failed");
+                        } else {
+                            generateUserBaseOnAuthObject(mAuth);
+                            verifyOrCreateIfUserExistOnDB(mAuth.getCurrentUser().getUid());
+                            mRegisterActivityView.userSuccessful(CurrentStoredUser.getInstance().getUser().getEmail());
+                        }
+                    }
+                });
     }
 
     @Override
@@ -77,10 +85,58 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                     mRegisterActivityView.showDialog("Oops", "Registration attemp failed");
                 } else {
                     generateUserBaseOnAuthObject(mAuth);
+                    verifyOrCreateIfUserExistOnDB(mAuth.getCurrentUser().getUid());
                     mRegisterActivityView.userSuccessful(CurrentStoredUser.getInstance().getUser().getEmail());
                 }
             }
         });
+    }
+
+    @Override
+    public void updateFirebaseUser(User user, String password) {
+
+        /*FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(user.getUsername())
+                .build();
+
+        firebaseUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TAG", "User profile updated.");
+                        }
+                    }
+                });
+
+
+
+        firebaseUser.updateEmail(user.getEmail()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("TAG", "onSuccess: ");
+            }
+        });
+
+*/
+
+
+/*        String key = mDatabaseReference.child("users").push().getKey();
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", user.getId());
+        result.put("email", user.getEmail());
+        result.put("name", user.getName());
+        result.put("phoneNumber", user.getPhoneNumber());
+        result.put("username", user.getUsername());
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/users/" + key, result);
+
+       // mDatabaseReference.updateChildren(childUpdates);
+*/
     }
 
     @Override
@@ -94,6 +150,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                         if (task.isSuccessful()) {
                             Log.d("TAG firebasefb", "signInWithCredential:success");
                             generateUserBaseOnAuthObject(mAuth);
+                            verifyOrCreateIfUserExistOnDB(mAuth.getCurrentUser().getUid());
                             mRegisterActivityView.userSuccessful(CurrentStoredUser.getInstance().getUser().getEmail());
                         } else {
                             // If sign in fails, display a message to the user.
@@ -117,6 +174,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithCredential:success");
                             generateUserBaseOnAuthObject(mAuth);
+                            verifyOrCreateIfUserExistOnDB(mAuth.getCurrentUser().getUid());
                             mRegisterActivityView.userSuccessful(CurrentStoredUser.getInstance().getUser().getEmail());
                         } else {
                             // If sign in fails, display a message to the user.
@@ -127,22 +185,31 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                 });
     }
 
+    private void verifyOrCreateIfUserExistOnDB(String uid) {
+        DatabaseReference mDatabaseReference;
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = mDatabaseReference.child("users").orderByChild("id").equalTo(uid);
 
-    /*private void generateUserBaseOnAuthObject(FirebaseAuth mAuth) {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // dataSnapshot is the "issue" node with all children with id 0
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        // do something with the individual "issues"
+                        Log.d("TAG", "onDataChange: " + issue.getKey());
+                    }
+                }else{
+                    DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+                    mDatabaseReference.child("users").push().setValue(CurrentStoredUser.getInstance().getUser());
+                }
+            }
 
-        User user = CurrentStoredUser.getInstance().getUser();
-        String userName=null;
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        if (mAuth.getCurrentUser().getDisplayName() == null ){
-            userName = mAuth.getCurrentUser().getEmail().split("@")[0].toString();
-        }else{
-            userName = mAuth.getCurrentUser().getDisplayName();
-        }
+            }
+        });
+    }
 
-        user.setName(userName);
-        user.setEmail(mAuth.getCurrentUser().getEmail());
-        user.setUsername(userName);
-        user.setPhoneNumber("not setting yet");
-        user.setId(mAuth.getCurrentUser().getUid());
-    }*/
 }

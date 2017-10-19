@@ -33,6 +33,7 @@
     <string name="log_in">LOG IN</string>
     <string name="already_a_user">Already a user?</string>
     <string name="or_with">or with</string>
+    <string name="profile">Profile</string>
 
 
 </resources>
