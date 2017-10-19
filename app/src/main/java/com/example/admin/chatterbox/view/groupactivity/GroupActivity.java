@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.groupactivity.DaggerGroupActivityComponent;
 import com.example.admin.chatterbox.model.chat.Chat;
+import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 
@@ -148,8 +149,6 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
         Toast.makeText(this, something, Toast.LENGTH_SHORT).show();
     }
 
-    public void uploadDialog() {
-        NiftyDialogBuilder dialogBuilder = NiftyDialogBuilder.getInstance(this);
     @Override
     public void sendSystemMsg(String msg) {
         mAdapter.addSystemMsg(msg);
