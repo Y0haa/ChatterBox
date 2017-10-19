@@ -1,6 +1,8 @@
 package com.example.admin.chatterbox.view.groupactivity;
 
 
+import android.net.Uri;
+
 import com.example.admin.chatterbox.BasePresenter;
 import com.example.admin.chatterbox.BaseView;
 import com.example.admin.chatterbox.model.chat.Group;
@@ -15,6 +17,8 @@ public interface GroupActivityContract {
     interface View extends BaseView {
 
         void updateInputMsg();
+
+        void updateOnSendImage(String something);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -26,6 +30,7 @@ public interface GroupActivityContract {
         void findDatabaseReference();
 
 
+        void uploadImage(Uri imageUri, String ownerId, String filename);
     }
 
 }

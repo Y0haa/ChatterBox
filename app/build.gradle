@@ -53,6 +53,9 @@ dependencies {
     //Speical Dialogs
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.sd6352051.niftydialogeffects:niftydialogeffects:1.0.0@aar'
+
+    //Firebase Storage
+    compile 'com.google.firebase:firebase-storage:10.0.1'
 }
 
 
