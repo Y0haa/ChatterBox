@@ -3,6 +3,7 @@ package com.example.admin.chatterbox.view.groupactivity;
 import com.example.admin.chatterbox.model.chat.Chat;
 import com.example.admin.chatterbox.model.chat.Group;
 import com.example.admin.chatterbox.util.Commands;
+import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -14,6 +15,9 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
 
     GroupActivityContract.View view;
     DatabaseReference databaseReference;
+    String owner = CurrentStoredUser.getInstance().getUser().getName();
+    String ownerId = CurrentStoredUser.getInstance().getUser().getId();
+    private String groupId;
 
     @Override
     public void attacheView(GroupActivityContract.View view) {
@@ -26,9 +30,9 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
     }
 
     @Override
-    public void sendMessage(String id, String msg, String owner, String ownerId, Long time) {
+    public void sendMessage(String msg, Long time) {
         Chat chat = new Chat(msg, owner, ownerId, time);
-        databaseReference.child("Groups").child(id).child("messages").push().setValue(chat);
+        databaseReference.child("Groups").child(groupId).child("messages").push().setValue(chat);
         view.updateInputMsg();
     }
 
@@ -70,7 +74,16 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
 
                     break;
 
+                case YOKO:
+                    sendMessage("/yoko",0l);
+                    break;
+
             }
 
+    }
+
+    @Override
+    public void setGroupId(String id) {
+        groupId = id;
     }
 }

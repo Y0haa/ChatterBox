@@ -12,7 +12,7 @@
         android:innerRadius="0dp"
         android:shape="ring"
         android:thicknessRatio="1.9"
-        app:cardCornerRadius="40dp">
+        app:cardCornerRadius="50dp">
 
         <ImageView
             android:id="@+id/ivAuthorImg"
@@ -33,5 +33,11 @@
         android:text="@string/sample_message"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textColor="@color/white" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/cvAuthorImg"
+        android:id="@+id/ivGif"/>
 
 </RelativeLayout>

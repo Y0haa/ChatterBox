@@ -21,7 +21,7 @@ public interface GroupActivityContract {
 
     interface Presenter extends BasePresenter<View> {
 
-        void sendMessage(String id, String msg, String owner, String ownerId, Long time);
+        void sendMessage(String msg, Long time);
         DatabaseReference getDatabaseReference();
         Group getGroup(String id);
 
@@ -29,6 +29,8 @@ public interface GroupActivityContract {
 
 
         void checkCommand(String msg);
+
+        void setGroupId(String id);
     }
 
 }

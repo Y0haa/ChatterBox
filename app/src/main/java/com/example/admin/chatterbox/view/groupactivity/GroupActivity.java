@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.groupactivity.DaggerGroupActivityComponent;
 import com.example.admin.chatterbox.model.chat.Chat;
-import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 
@@ -53,13 +52,14 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
 
         mColumnCount = 1;
         id = getIntent().getStringExtra("ID");
+        presenter.setGroupId(id);
 
         presenter.findDatabaseReference();
         //Group group = presenter.getGroup(getIntent().getStringExtra("ID"));
         //chatList = group.getPosts();
 
 
-        mAdapter = new ChatRecyclerViewAdapter(id, presenter.getDatabaseReference(), this);
+        mAdapter = new ChatRecyclerViewAdapter(id, presenter.getDatabaseReference(), this, this);
 
 
     }
@@ -96,8 +96,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
             if (msg.charAt(0) == '/') {
                 presenter.checkCommand(msg);
             } else {
-                presenter.sendMessage(id, msg, CurrentStoredUser.getInstance().getUser().getName(),
-                        CurrentStoredUser.getInstance().getUser().getId(), 0l);
+                presenter.sendMessage(msg, 0l);
             }
         }
     }
