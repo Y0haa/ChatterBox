@@ -52,7 +52,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     private ChatRecyclerViewAdapter mAdapter;
     private String id;
     ProgressDialog pd;
-
+    NiftyDialogBuilder dialogBuilder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +146,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     @Override
     public void updateOnSendImage(String something) {
         pd.dismiss();
+        dialogBuilder.dismiss();
         Toast.makeText(this, something, Toast.LENGTH_SHORT).show();
     }
 
@@ -155,11 +156,11 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     }
 
     public void uploadDialog(){
-        NiftyDialogBuilder dialogBuilder=NiftyDialogBuilder.getInstance(this);
+
 
 
         effect = Effectstype.RotateBottom;
-
+        dialogBuilder=NiftyDialogBuilder.getInstance(this);
 
         dialogBuilder
                 .withTitle(null)                                  //.withTitle(null)  no title

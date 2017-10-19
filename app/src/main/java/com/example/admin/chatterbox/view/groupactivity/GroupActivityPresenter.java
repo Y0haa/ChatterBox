@@ -63,7 +63,9 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
 
     @Override
     public void findDatabaseReference() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference =
+
+                FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
