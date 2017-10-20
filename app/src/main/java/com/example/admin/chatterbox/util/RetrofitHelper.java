@@ -31,19 +31,19 @@ public class RetrofitHelper {
     public static Observable<Response<GiphyResponse>> createGiphyTranslate(String input) {
         Retrofit retrofit = create();
         ApiService apiService = retrofit.create(ApiService.class);
-        return apiService.getGiphyTranslate("P84N8KgkEK9VXrmhe2CbFsPbqWf5craX", input);
+        return apiService.getGiphyTranslate(KeyContract.GIPHY_KEY, input);
     }
 
     public static Observable<Response<GiphyTrendingResponse>> createGiphyTrending() {
         Retrofit retrofit = create();
         ApiService apiService = retrofit.create(ApiService.class);
-        return apiService.getGiphyTrending("P84N8KgkEK9VXrmhe2CbFsPbqWf5craX", "1", "PG-13");
+        return apiService.getGiphyTrending(KeyContract.GIPHY_KEY, "1", "PG-13");
     }
 
     public static Observable<Response<GiphyRandomResponse>> createGiphyRandom(String tag) {
         Retrofit retrofit = create();
         ApiService apiService = retrofit.create(ApiService.class);
-        return apiService.getGiphyRandom("P84N8KgkEK9VXrmhe2CbFsPbqWf5craX", tag, "PG-13");
+        return apiService.getGiphyRandom(KeyContract.GIPHY_KEY, tag, "PG-13");
     }
 
     interface ApiService{
