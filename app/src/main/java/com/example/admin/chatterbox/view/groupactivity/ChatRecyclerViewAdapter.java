@@ -93,7 +93,6 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
         RelativeLayout.LayoutParams lpGif = (RelativeLayout.LayoutParams) holder.ivGif.getLayoutParams();
-
         String message = "";
         if (holder.mItem != null) {
             if (holder.mItem.getOwner() != null) {
@@ -126,25 +125,32 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 //holder.tvAuthor.setText(holder.mItem.getOwner());
             }
 
-            //Getting images that users posted
+            //PABLO IF YOU WANT TO USE THIS CODE ADD IT TO THE doCommand METHOD
+            //WE CAN DISCUSS HEIGHT LIMITS LATER
+
+            /*//Getting images that users posted
             if (URLUtil.isValidUrl(holder.mItem.getPost())) {
                 holder.ivGif.setVisibility(View.VISIBLE);
                 holder.tvMsg.setVisibility(View.INVISIBLE);
                 holder.ivGif.getLayoutParams().height = 300;
                 Glide.with(context).load(holder.mItem.getPost()).into(holder.ivGif);
-            }
-            else if (holder.mItem.getPost().charAt(0) != '/') {
+            }*/
+
+
+            if (holder.mItem.getPost().charAt(0) != '/') {
                 holder.tvMsg.setVisibility(View.VISIBLE);
                 holder.tvMsg.setLayoutParams(lp);
                 message += holder.mItem.getPost();
                 holder.tvMsg.setText(message);
                 holder.ivGif.setVisibility(View.INVISIBLE);
-                holder.ivGif.getLayoutParams().height = 0;
-            }
-            else {
+            } else if (URLUtil.isValidUrl(holder.mItem.getPost())) {
                 holder.ivGif.setVisibility(View.VISIBLE);
                 holder.tvMsg.setVisibility(View.INVISIBLE);
-                holder.ivGif.getLayoutParams().height = 300;
+                //holder.ivGif.getLayoutParams().height = 300;
+                Glide.with(context).load(holder.mItem.getPost()).into(holder.ivGif);
+            } else {
+                holder.ivGif.setVisibility(View.VISIBLE);
+                holder.tvMsg.setVisibility(View.INVISIBLE);
                 String cmd = holder.mItem.getPost().substring(1);
                 doCommand(holder, cmd);
             }
@@ -163,9 +169,18 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     }
 
     private void doCommand(ViewHolder holder, String cmd) {
+        String args = cmd.substring(cmd.indexOf(' ') + 1);
+        if (cmd.contains(" ")) {
+            cmd = cmd.substring(0, cmd.indexOf(' '));
+        }
         switch (Commands.valueOf(cmd.toUpperCase())) {
             case YOKO:
                 Glide.with(context).asGif().load(R.drawable.yoko).into(holder.ivGif);
+                break;
+
+            case GIPHY:
+                Glide.with(context).asGif().load(args).into(holder.ivGif);
+                break;
         }
     }
 
