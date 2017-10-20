@@ -98,6 +98,12 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
     View viewNewPassword;
     @BindView(R.id.view_separator_current_password_id)
     View viewCurrenPassword;
+/*
+
+    @BindView(R.id.bgVideoView)
+    VideoView mVideoView;
+*/
+
 
     @Inject
     MainLoginPresenter mActionsListener;
@@ -117,7 +123,13 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
             //passwordEdit.setText("*****");
             emailEdit.setText(user.getEmail());
             phoneNumberEdit.setText(user.getPhoneNumber());
-            GlideApp.with(getContext()).load(user.getUserImage()).into(imageProfile);
+
+            if (user.getUserImage().equals("")){
+                imageProfile.setImageResource(R.drawable.default_user);
+            }else{
+                GlideApp.with(getContext()).load(user.getUserImage()).into(imageProfile);
+            }
+
         } catch (Exception e) {
         }
     }
@@ -223,7 +235,7 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
 
     @Override
     public void showDialog(String title, String msg) {
-
+        //Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -341,5 +353,27 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
             else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult(data);
         }
+    }
+
+
+/*    private void reproduceVideo() {
+
+        Uri uri = Uri.parse("android.resource://"+getActivity().getPackageName()+"/"+R.raw.landscape);
+
+        mVideoView.setVideoURI(uri);
+        mVideoView.start();
+
+        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.setLooping(true);
+            }
+        });
+    }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //reproduceVideo();
     }
 }

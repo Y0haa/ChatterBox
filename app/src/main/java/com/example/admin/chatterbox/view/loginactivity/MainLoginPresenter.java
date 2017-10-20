@@ -267,29 +267,34 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
 
         try {
 
-            AuthCredential credential = EmailAuthProvider
-                    .getCredential(user.getEmail(), CurrentStoredUser.getInstance().getPassword());
+            if (CurrentStoredUser.getInstance().getPassword()!=null){
+                AuthCredential credential = EmailAuthProvider
+                        .getCredential(user.getEmail(), CurrentStoredUser.getInstance().getPassword());
 
-            firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
+                firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
-                    if (task.isSuccessful()) {
-                        firebaseUser.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d("TAG", "Password updated");
-                                    CurrentStoredUser.getInstance().setPassword(password);
-                                } else {
-                                    Log.d("TAG", "Error password not updated");
+                        if (task.isSuccessful()) {
+                            firebaseUser.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("TAG", "Password updated");
+                                        CurrentStoredUser.getInstance().setPassword(password);
+                                    } else {
+                                        Log.d("TAG", "Error password not updated");
+                                    }
+
                                 }
-
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                mRegisterActivityView.showDialog("Password", "Password have not been changed");
+            }
+
 
         } catch (Exception e) {
             mRegisterActivityView.showDialog("Error", e.getMessage().toString());
