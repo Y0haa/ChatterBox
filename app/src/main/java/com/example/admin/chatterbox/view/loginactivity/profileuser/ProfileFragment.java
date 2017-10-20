@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.admin.chatterbox.R;
@@ -23,8 +25,10 @@ import com.example.admin.chatterbox.model.chat.User;
 import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.example.admin.chatterbox.util.Utility;
 import com.example.admin.chatterbox.util.customfonts.MyEditText;
+import com.example.admin.chatterbox.util.customfonts.MyTextView;
 import com.example.admin.chatterbox.view.loginactivity.MainLoginContract;
 import com.example.admin.chatterbox.view.loginactivity.MainLoginPresenter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -69,11 +73,38 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
     MyEditText currentPasswordEdit;
     private View view;
 
+    @BindView(R.id.phone_number_text)
+    MyTextView phoneNumberText;
+    @BindView(R.id.password_text)
+    MyTextView passwordText;
+    @BindView(R.id.current_password_text)
+    MyTextView currentPasswordText;
+
+    @BindView(R.id.relative_layout__main_profile_id)
+    RelativeLayout relativeLayout;
+    @BindView(R.id.linear_layout_current_password_id)
+    LinearLayout linearLayoutCurrentPassword;
+    @BindView(R.id.linear_layout_new_password_id)
+    LinearLayout linearLayoutNewPassword;
+    @BindView(R.id.linear_layout_phone_number_id)
+    LinearLayout linearLayoutPhoneNumber;
+    @BindView(R.id.linear_layout_buttons_id)
+    LinearLayout linearLayoutButtonsId;
+
+    @BindView(R.id.view_separator_email_id)
+    View viewSeparatorEmail;
+
+    @BindView(R.id.view_separator_new_password_id)
+    View viewNewPassword;
+    @BindView(R.id.view_separator_current_password_id)
+    View viewCurrenPassword;
+
     @Inject
     MainLoginPresenter mActionsListener;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
+    private String providerId;
 
 
     private void setViewValues() {
@@ -98,6 +129,31 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
 
         setupDagger();
         setViewValues();
+
+        FirebaseAuth mAuth;
+        mAuth = FirebaseAuth.getInstance();
+
+        providerId = mAuth.getCurrentUser().getProviderData().get(1).getProviderId();
+        if (providerId.equals("facebook.com") || providerId.equals("google.com")) {
+
+            linearLayoutCurrentPassword.setVisibility(View.GONE);
+            linearLayoutNewPassword.setVisibility(View.GONE);
+            linearLayoutPhoneNumber.setVisibility(View.GONE);
+            linearLayoutButtonsId.setVisibility(View.GONE);
+            viewSeparatorEmail.setVisibility(View.GONE);
+            viewNewPassword.setVisibility(View.GONE);
+            viewCurrenPassword.setVisibility(View.GONE);
+
+            nameEdit.setEnabled(false);
+            userName.setEnabled(false);
+            emailEdit.setEnabled(false);
+            imageProfile.setClickable(false);
+
+
+
+            relativeLayout.setClickable(false);
+            relativeLayout.setActivated(false);
+        }
 
         return view;
     }
@@ -133,11 +189,11 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
                 if (passwordEdit.getText().length() > 0) {
                     if (passwordEdit.getText().length() < 6) {
                         Toast.makeText(getContext(), "Password lenght must be at least 6", Toast.LENGTH_SHORT).show();
-                    }else{
-                        if(currentPasswordEdit.getText().length()<0){
+                    } else {
+                        if (currentPasswordEdit.getText().length() < 0) {
                             Toast.makeText(getContext(), "Must type current password", Toast.LENGTH_SHORT).show();
                             return;
-                        }else{
+                        } else {
                             CurrentStoredUser.getInstance().setPassword(currentPasswordEdit.getText().toString());
                         }
                     }
@@ -257,9 +313,7 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //imageProfile.setImageBitmap(thumbnail);
         mActionsListener.savePictureProfile(data.getData(), CurrentStoredUser.getInstance().getUser().getId());
-        //      ivImage.setImageBitmap(thumbnail);
     }
 
     @SuppressWarnings("deprecation")
@@ -273,11 +327,8 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
                 e.printStackTrace();
             }
         }
-        //imageProfile.setImageBitmap(bm);
         mActionsListener.savePictureProfile(data.getData(), CurrentStoredUser.getInstance().getUser().getId());
 
-
-//        ivImage.setImageBitmap(bm);
     }
 
     @Override
@@ -291,6 +342,4 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
                 onCaptureImageResult(data);
         }
     }
-
-
 }

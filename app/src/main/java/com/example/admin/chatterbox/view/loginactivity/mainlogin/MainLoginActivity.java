@@ -68,6 +68,7 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
     public void signInExistingUser(View view) {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        //TODO REVIEW ISSUE WITH AUTHENTICATION AFTER MINUTES
         if (currentUser != null){
             Log.d("TAG", "onStart: " + currentUser.getDisplayName());
             //CurrentStoredUser.generateUserBaseOnAuthObject(mAuth);

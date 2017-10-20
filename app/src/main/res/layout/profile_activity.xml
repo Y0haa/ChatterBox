@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/relative_layout__main_profile_id"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -10,6 +11,8 @@
         android:id="@+id/frame"
 
         >
+
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -137,6 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/linear_layout_current_password_id"
             >
             <com.example.admin.chatterbox.util.customfonts.MyTextView
                 android:id="@+id/current_password_text"
@@ -165,6 +169,7 @@
                 />
         </LinearLayout>
         <View
+            android:id="@+id/view_separator_current_password_id"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#dad8d8"/>
@@ -174,6 +179,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/linear_layout_new_password_id"
             >
             <com.example.admin.chatterbox.util.customfonts.MyTextView
                 android:id="@+id/password_text"
@@ -202,6 +208,7 @@
                 />
         </LinearLayout>
         <View
+            android:id="@+id/view_separator_new_password_id"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#dad8d8"/>
@@ -236,6 +243,7 @@
                 />
         </LinearLayout>
         <View
+            android:id="@+id/view_separator_email_id"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#dad8d8" />
@@ -243,6 +251,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/linear_layout_phone_number_id"
+
             >
 
             <com.example.admin.chatterbox.util.customfonts.MyTextView
@@ -265,6 +275,8 @@
                 android:hint="Phone number"
                 android:textColorHint="#181737"
                 android:background="#0000"
+                android:inputType="phone"
+                android:digits="0123456789+"
                 android:padding="16dp"
                 android:gravity="right"
                 />
@@ -273,11 +285,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:id="@+id/view_separator_phone_number_id"
             android:background="#dad8d8" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/linear_layout_buttons_id"
             >
 
             <Button

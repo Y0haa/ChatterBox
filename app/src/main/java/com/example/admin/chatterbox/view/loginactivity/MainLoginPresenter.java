@@ -346,10 +346,14 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                 }
             }
 
+
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
+
         });
     }
 

@@ -64,8 +64,10 @@ public class CurrentStoredUser {
             user.setUsername(userName);
             user.setPhoneNumber("9999999999");
             user.setId(mAuth.getCurrentUser().getUid());
+            user.setUserImage(mAuth.getCurrentUser().getPhotoUrl().toString());
 
-        }catch(Exception e){
+
+        } catch (Exception e) {
             Log.d("TAG", "generateUserBaseOnAuthObject: " + "User not generated. Auth is empty");
         }
     }
@@ -84,7 +86,7 @@ public class CurrentStoredUser {
             user.setId(userDB.get("id"));
             user.setUserImage(userDB.get("userImage"));
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.d("TAG", "generateUserBaseOnAuthObject: " + "User not generated. Auth is empty");
         }
     }
@@ -96,7 +98,7 @@ public class CurrentStoredUser {
 
             CurrentStoredUser.getInstance().setUser(user);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.d("TAG", "generateUserBaseOnAuthObject: " + "User not generated. Auth is empty");
         }
     }
