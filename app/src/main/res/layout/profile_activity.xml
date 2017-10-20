@@ -131,12 +131,50 @@
             android:layout_height="1dp"
             android:background="#dad8d8"/>
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             >
+            <com.example.admin.chatterbox.util.customfonts.MyTextView
+                android:id="@+id/current_password_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#0000"
+                android:gravity="left"
+                android:padding="16dp"
+                android:text="Current password"
+                android:textColor="#a2a1b8"
+                android:textSize="16dp" />
+            <com.example.admin.chatterbox.util.customfonts.MyEditText
+                android:layout_weight="1"
+                android:id="@+id/current_password_edit"
+                android:textSize="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#1b193b"
+                android:inputType="textPassword"
+                android:hint="**********"
+                android:textColor="#181737"
+                android:background="#0000"
+                android:padding="16dp"
+                android:gravity="right"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#dad8d8"/>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
             <com.example.admin.chatterbox.util.customfonts.MyTextView
                 android:id="@+id/password_text"
                 android:layout_width="match_parent"
@@ -145,7 +183,7 @@
                 android:background="#0000"
                 android:gravity="left"
                 android:padding="16dp"
-                android:text="Password"
+                android:text="New password"
                 android:textColor="#a2a1b8"
                 android:textSize="16dp" />
             <com.example.admin.chatterbox.util.customfonts.MyEditText

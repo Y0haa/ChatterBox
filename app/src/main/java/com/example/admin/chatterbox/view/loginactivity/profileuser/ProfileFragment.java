@@ -65,6 +65,8 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
     Button buttonFragmentCancel;
     @BindView(R.id.button_fragment_ok)
     Button buttonFragmentOk;
+    @BindView(R.id.current_password_edit)
+    MyEditText currentPasswordEdit;
     private View view;
 
     @Inject
@@ -75,18 +77,18 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
 
 
     private void setViewValues() {
-        mActionsListener.verifyOrCreateIfUserExistOnDB(CurrentStoredUser.getInstance().getUser().getId());
-        User user = CurrentStoredUser.getInstance().getUser();
+        try {
+            mActionsListener.verifyOrCreateIfUserExistOnDB(CurrentStoredUser.getInstance().getUser().getId());
+            User user = CurrentStoredUser.getInstance().getUser();
 
-        nameEdit.setText(user.getName());
-        userName.setText(user.getUsername());
-        //passwordEdit.setText("*****");
-        emailEdit.setText(user.getEmail());
-        phoneNumberEdit.setText(user.getPhoneNumber());
-        //  Uri.Builder uri = new Uri.Builder().appendPath("gs://chatterbox-b78d6.appspot.com/profileimage/o87gqpNfPKZMH4RYVraVsg9u88h1");
-        ///Glide.with(getContext()).using(new FirebaseImageLoader()).load(uri).into(imageProfile);
-        GlideApp.with(getContext()).load(user.getUserImage()).into(imageProfile);
-        // imageProfile.setImageResource(R.mipmap.ic_launcher);
+            nameEdit.setText(user.getName());
+            userName.setText(user.getUsername());
+            //passwordEdit.setText("*****");
+            emailEdit.setText(user.getEmail());
+            phoneNumberEdit.setText(user.getPhoneNumber());
+            GlideApp.with(getContext()).load(user.getUserImage()).into(imageProfile);
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -127,7 +129,19 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
                 dismiss();
                 break;
             case R.id.button_fragment_ok:
-                //Toast.makeText(getContext(), emailEdit.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                if (passwordEdit.getText().length() > 0) {
+                    if (passwordEdit.getText().length() < 6) {
+                        Toast.makeText(getContext(), "Password lenght must be at least 6", Toast.LENGTH_SHORT).show();
+                    }else{
+                        if(currentPasswordEdit.getText().length()<0){
+                            Toast.makeText(getContext(), "Must type current password", Toast.LENGTH_SHORT).show();
+                            return;
+                        }else{
+                            CurrentStoredUser.getInstance().setPassword(currentPasswordEdit.getText().toString());
+                        }
+                    }
+                }
                 mActionsListener.updateFirebaseUser(createUserObject(), passwordEdit.getText().toString());
                 Toast.makeText(getContext(), "Record updated", Toast.LENGTH_SHORT).show();
                 dismiss();
@@ -136,15 +150,18 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
     }
 
     private User createUserObject() {
+
         User user = new User();
+        try {
+            user.setId(CurrentStoredUser.getInstance().getUser().getId());
+            user.setName(nameEdit.getText().toString());
+            user.setUsername(userName.getText().toString());
+            user.setEmail(emailEdit.getText().toString());
+            user.setPhoneNumber(phoneNumberEdit.getText().toString());
+            user.setUserImage(CurrentStoredUser.getInstance().getUser().getUserImage());
+        } catch (Exception e) {
 
-        user.setId(CurrentStoredUser.getInstance().getUser().getId());
-        user.setName(nameEdit.getText().toString());
-        user.setUsername(userName.getText().toString());
-        user.setEmail(emailEdit.getText().toString());
-        user.setPhoneNumber(phoneNumberEdit.getText().toString());
-        user.setUserImage(CurrentStoredUser.getInstance().getUser().getUserImage());
-
+        }
         return user;
     }
 
