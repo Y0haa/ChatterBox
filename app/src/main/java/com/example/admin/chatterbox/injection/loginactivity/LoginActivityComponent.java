@@ -1,5 +1,6 @@
 package com.example.admin.chatterbox.injection.loginactivity;
 
+import com.example.admin.chatterbox.view.loginactivity.mainlogin.MainLoginActivity;
 import com.example.admin.chatterbox.view.loginactivity.profileuser.ProfileFragment;
 import com.example.admin.chatterbox.view.loginactivity.registeruser.MainRegisterActivity;
 import com.example.admin.chatterbox.view.loginactivity.signinuser.MainSignInActivity;
@@ -16,5 +17,5 @@ public interface LoginActivityComponent {
     void inject(MainRegisterActivity activity);
     void inject(MainSignInActivity activity);
     void inject(ProfileFragment activity);
-
+    void inject(MainLoginActivity activity);
 }

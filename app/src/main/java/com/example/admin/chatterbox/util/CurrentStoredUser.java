@@ -4,7 +4,8 @@ import android.util.Log;
 
 import com.example.admin.chatterbox.model.chat.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
 
 /**
  * Created by Admin on 10/13/2017.
@@ -12,7 +13,18 @@ import com.google.firebase.database.DatabaseReference;
 
 public class CurrentStoredUser {
 
-    private static DatabaseReference mDatabaseReference;
+
+    private User user = new User();
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    private String password;
 
     public User getUser() {
         return user;
@@ -21,8 +33,6 @@ public class CurrentStoredUser {
     public void setUser(User user) {
         this.user = user;
     }
-
-    private User user = new User();
 
     private static final CurrentStoredUser ourInstance = new CurrentStoredUser();
 
@@ -37,6 +47,9 @@ public class CurrentStoredUser {
 
         try {
 
+            //TODO VALIDATE IF USER EXIST OTHERWISER CREATE THE FIRST ONE
+
+
             User user = CurrentStoredUser.getInstance().getUser();
             String userName = null;
 
@@ -49,21 +62,33 @@ public class CurrentStoredUser {
             user.setName(userName);
             user.setEmail(mAuth.getCurrentUser().getEmail());
             user.setUsername(userName);
-            user.setPhoneNumber("not setting yet");
+            user.setPhoneNumber("9999999999");
             user.setId(mAuth.getCurrentUser().getUid());
-
-
-
-/*
-            mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-            mDatabaseReference.child("users").push().setValue(user);
-*/
-
 
         }catch(Exception e){
             Log.d("TAG", "generateUserBaseOnAuthObject: " + "User not generated. Auth is empty");
         }
     }
+
+    public static void generateUserBaseOnUserObject(HashMap<String, String> userDB) {
+
+        try {
+
+            //TODO VALIDATE IF USER EXIST OTHERWISER CREATE THE FIRST ONE
+
+            User user = CurrentStoredUser.getInstance().getUser();
+            user.setName(userDB.get("name"));
+            user.setEmail(userDB.get("email"));
+            user.setUsername(userDB.get("username"));
+            user.setPhoneNumber(userDB.get("phoneNumber"));
+            user.setId(userDB.get("id"));
+            user.setUserImage(userDB.get("userImage"));
+
+        }catch(Exception e){
+            Log.d("TAG", "generateUserBaseOnAuthObject: " + "User not generated. Auth is empty");
+        }
+    }
+
 
     public static void updateUserBaseOnUserDB(User user) {
 

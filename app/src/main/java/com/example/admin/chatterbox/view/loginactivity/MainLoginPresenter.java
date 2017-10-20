@@ -1,6 +1,7 @@
 package com.example.admin.chatterbox.view.loginactivity;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -9,10 +10,12 @@ import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +27,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +59,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
     }
 
     @Override
-    public void createFirebaseUser(String emailUser, String passwordUser) {
+    public void createFirebaseUser(String emailUser, final String passwordUser) {
         String email = emailUser;
         String password = passwordUser;
 
@@ -69,6 +75,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                         } else {
                             generateUserBaseOnAuthObject(mAuth);
                             verifyOrCreateIfUserExistOnDB(mAuth.getCurrentUser().getUid());
+                            CurrentStoredUser.getInstance().setPassword(passwordUser);
                             mRegisterActivityView.userSuccessful(CurrentStoredUser.getInstance().getUser().getEmail());
                         }
                     }
@@ -76,9 +83,9 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
     }
 
     @Override
-    public void signinFirebaseUser(String emailUser, String passwordUser) {
+    public void signinFirebaseUser(String emailUser, final String passwordUser) {
         String email = emailUser;
-        String password = passwordUser;
+        final String password = passwordUser;
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -92,6 +99,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                 } else {
                     generateUserBaseOnAuthObject(mAuth);
                     verifyOrCreateIfUserExistOnDB(mAuth.getCurrentUser().getUid());
+                    CurrentStoredUser.getInstance().setPassword(passwordUser);
                     mRegisterActivityView.userSuccessful(CurrentStoredUser.getInstance().getUser().getEmail());
                 }
             }
@@ -99,7 +107,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
     }
 
     @Override
-    public void updateFirebaseUser(final User user, String password) {
+    public void updateFirebaseUser(final User user, final String password) {
 
 
         DatabaseReference mDatabaseReference;
@@ -114,10 +122,10 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         // do something with the individual "issues"
                         Log.d("TAG", "onDataChange: " + issue.getKey());
-                        updateAuthUser(user);
+                        updateAuthUser(user, password);
                         updateDBUser(issue.getKey(), user);
                     }
-                }else{
+                } else {
                 }
             }
 
@@ -127,52 +135,36 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
             }
         });
 
+    }
 
-        /*FirebaseUser firebaseUser = mAuth.getCurrentUser();
-
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(user.getUsername())
-                .build();
-
-        firebaseUser.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TAG", "User profile updated.");
-                        }
-                    }
-                });
+    public void updateFirebaseWithoutAuth(final User user) {
 
 
+        DatabaseReference mDatabaseReference;
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = mDatabaseReference.child("users").orderByChild("id").equalTo(user.getId());
 
-        firebaseUser.updateEmail(user.getEmail()).addOnSuccessListener(new OnSuccessListener<Void>() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("TAG", "onSuccess: ");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // dataSnapshot is the "issue" node with all children with id 0
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        // do something with the individual "issues"
+                        Log.d("TAG", "onDataChange: " + issue.getKey());
+                        updateDBUser(issue.getKey(), user);
+                    }
+                } else {
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
-*/
-
-
-/*        String key = mDatabaseReference.child("users").push().getKey();
-
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("uid", user.getId());
-        result.put("email", user.getEmail());
-        result.put("name", user.getName());
-        result.put("phoneNumber", user.getPhoneNumber());
-        result.put("username", user.getUsername());
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/users/" + key, result);
-
-       // mDatabaseReference.updateChildren(childUpdates);
-*/
     }
-
-
 
     @Override
     public void handleFacebookAccessToken(AccessToken token) {
@@ -220,7 +212,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                 });
     }
 
-    private void verifyOrCreateIfUserExistOnDB(String uid) {
+    public void verifyOrCreateIfUserExistOnDB(String uid) {
         DatabaseReference mDatabaseReference;
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = mDatabaseReference.child("users").orderByChild("id").equalTo(uid);
@@ -233,8 +225,9 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         // do something with the individual "issues"
                         Log.d("TAG", "onDataChange: " + issue.getKey());
+                        CurrentStoredUser.generateUserBaseOnUserObject((HashMap<String, String>) issue.getValue());
                     }
-                }else{
+                } else {
                     DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
                     mDatabaseReference.child("users").push().setValue(CurrentStoredUser.getInstance().getUser());
                 }
@@ -247,9 +240,9 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
         });
     }
 
-    private void updateAuthUser(User user) {
+    private void updateAuthUser(User user, final String password) {
 
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        final FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(user.getUsername())
@@ -272,6 +265,31 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
             }
         });
 
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(user.getEmail(), CurrentStoredUser.getInstance().getPassword());
+
+        firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (task.isSuccessful()) {
+                    firebaseUser.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("TAG", "Password updated");
+                                CurrentStoredUser.getInstance().setPassword(password);
+                            } else {
+                                Log.d("TAG", "Error password not updated");
+                            }
+
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 
     private void updateDBUser(String uid, final User user) {
@@ -284,6 +302,8 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
         result.put("name", user.getName());
         result.put("phoneNumber", user.getPhoneNumber());
         result.put("username", user.getUsername());
+        result.put("userImage", user.getUserImage());
+
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + uid, result);
@@ -298,7 +318,60 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
 
     }
 
+    public void getLastUserOnDB(String uid) {
+        DatabaseReference mDatabaseReference;
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = mDatabaseReference.child("users").orderByChild("id").equalTo(uid);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // dataSnapshot is the "issue" node with all children with id 0
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        // do something with the individual "issues"
+                        mRegisterActivityView.userSuccessful(issue.getValue());
 
 
+                        Log.d("TAG", "onDataChange: " + issue.getKey());
+
+                    }
+                } else {
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public void savePictureProfile(Uri imageUri, String ownerId) {
+        FirebaseStorage storage = FirebaseStorage.getInstance(); // Use for Firebase storage
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://chatterbox-b78d6.appspot.com/");//Firebase storage location
+
+        if (imageUri != null) {
+            StorageReference childRef = storageRef.child("profileimage" + "/" + ownerId);
+            UploadTask uploadTask = childRef.putFile(imageUri);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d("TAG", "onSuccess: ");
+                    CurrentStoredUser.getInstance().getUser().setUserImage(taskSnapshot.getDownloadUrl().toString());
+                    updateFirebaseWithoutAuth(CurrentStoredUser.getInstance().getUser());
+                    mRegisterActivityView.userSuccessful(taskSnapshot.getDownloadUrl().toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("TAG", "onFailure: ");
+                }
+            });
+
+        }
+    }
 
 }

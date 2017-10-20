@@ -13,7 +13,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.admin.chatterbox.R;
+import com.example.admin.chatterbox.injection.loginactivity.DaggerLoginActivityComponent;
 import com.example.admin.chatterbox.util.CurrentStoredUser;
+import com.example.admin.chatterbox.view.loginactivity.MainLoginContract;
+import com.example.admin.chatterbox.view.loginactivity.MainLoginPresenter;
 import com.example.admin.chatterbox.view.loginactivity.registeruser.MainRegisterActivity;
 import com.example.admin.chatterbox.view.loginactivity.signinuser.MainSignInActivity;
 import com.example.admin.chatterbox.view.mainactivity.MainActivity;
@@ -27,8 +30,12 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.HashMap;
 
-public class MainLoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+import javax.inject.Inject;
+
+
+public class MainLoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MainLoginContract.View{
 
     private FirebaseAuth mAuth;
 
@@ -37,11 +44,20 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
     public static final String DISPLAY_NAME_KEY = "username";
     private static final int RC_SIGN_IN = 9002;
 
+    @Inject
+    MainLoginPresenter mActionsListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_login);
+        setupDagger();
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void setupDagger() {
+        DaggerLoginActivityComponent.create().inject(this);
+        mActionsListener.attacheView(this);
     }
 
     public void registerNewUser(View view) {
@@ -54,9 +70,10 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
             Log.d("TAG", "onStart: " + currentUser.getDisplayName());
-            CurrentStoredUser.generateUserBaseOnAuthObject(mAuth);
-            saveDisplayName(CurrentStoredUser.getInstance().getUser().getEmail());
-            callNextActivity();
+            //CurrentStoredUser.generateUserBaseOnAuthObject(mAuth);
+            //saveDisplayName(CurrentStoredUser.getInstance().getUser().getEmail());
+            //callNextActivity();
+            mActionsListener.getLastUserOnDB(mAuth.getCurrentUser().getUid());
         } else{
             Log.d("TAG", "onStart: " + "No user");
             Intent intent = new Intent(this, MainSignInActivity.class);
@@ -148,4 +165,19 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
     }
 
 
+    @Override
+    public void showDialog(String title, String msg) {
+
+    }
+
+    @Override
+    public void userSuccessful(String user) {
+    }
+
+    @Override
+    public void userSuccessful(Object value) {
+        CurrentStoredUser.generateUserBaseOnUserObject((HashMap<String, String>) value);
+        saveDisplayName(CurrentStoredUser.getInstance().getUser().getEmail());
+        callNextActivity();
+    }
 }

@@ -215,6 +215,11 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
         callNextActivity();
     }
 
+    @Override
+    public void userSuccessful(Object value) {
+
+    }
+
     private void saveDisplayName(String user) {
         String displayName = user;
         SharedPreferences prefs = getSharedPreferences(CHAT_PREFS, 0);

@@ -25,6 +25,7 @@ repositories {
 
 
 dependencies {
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -58,6 +59,10 @@ dependencies {
 
     //Firebase Storage
     compile 'com.google.firebase:firebase-storage:10.0.1'
+
+    //Circular image
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
 }
 
 

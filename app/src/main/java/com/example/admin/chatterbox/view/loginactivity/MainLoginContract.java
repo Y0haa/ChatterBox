@@ -13,6 +13,8 @@ public interface MainLoginContract {
     interface View{
         void showDialog(String title, String msg);
         void userSuccessful(String user);
+
+        void userSuccessful(Object value);
     }
 
     interface UserActionsListener{
@@ -22,6 +24,7 @@ public interface MainLoginContract {
 
         void signinFirebaseUser(String emailUser, String passwordUser);
         void updateFirebaseUser(User user, String password);
+        void getLastUserOnDB(String uid);
     }
 
 }
