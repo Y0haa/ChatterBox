@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -92,6 +93,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
         RelativeLayout.LayoutParams lpGif = (RelativeLayout.LayoutParams) holder.ivGif.getLayoutParams();
+
         String message = "";
         if (holder.mItem != null) {
             if (holder.mItem.getOwner() != null) {
@@ -123,15 +125,26 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
                 //holder.tvAuthor.setText(holder.mItem.getOwner());
             }
-            if (holder.mItem.getPost().charAt(0) != '/') {
+
+            //Getting images that users posted
+            if (URLUtil.isValidUrl(holder.mItem.getPost())) {
+                holder.ivGif.setVisibility(View.VISIBLE);
+                holder.tvMsg.setVisibility(View.INVISIBLE);
+                holder.ivGif.getLayoutParams().height = 300;
+                Glide.with(context).load(holder.mItem.getPost()).into(holder.ivGif);
+            }
+            else if (holder.mItem.getPost().charAt(0) != '/') {
                 holder.tvMsg.setVisibility(View.VISIBLE);
                 holder.tvMsg.setLayoutParams(lp);
                 message += holder.mItem.getPost();
                 holder.tvMsg.setText(message);
                 holder.ivGif.setVisibility(View.INVISIBLE);
-            }else {
+                holder.ivGif.getLayoutParams().height = 0;
+            }
+            else {
                 holder.ivGif.setVisibility(View.VISIBLE);
                 holder.tvMsg.setVisibility(View.INVISIBLE);
+                holder.ivGif.getLayoutParams().height = 300;
                 String cmd = holder.mItem.getPost().substring(1);
                 doCommand(holder, cmd);
             }

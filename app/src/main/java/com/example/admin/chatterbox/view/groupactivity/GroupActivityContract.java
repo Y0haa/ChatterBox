@@ -35,7 +35,7 @@ public interface GroupActivityContract {
         void checkCommand(String msg);
 
         void setGroupId(String id);
-        void uploadImage(Uri imageUri, String ownerId, String filename);
+        void uploadImage(Uri imageUri, String filename);
     }
 
 }

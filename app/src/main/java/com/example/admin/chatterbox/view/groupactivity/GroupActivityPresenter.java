@@ -104,19 +104,38 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
     }
 
     @Override
-    public void uploadImage(Uri imageUri, String ownerId, String filename) {
+    public void uploadImage(Uri imageUri, String filename) {
         if(imageUri != null) {
 
             //Storing in unique location
-            StorageReference childRef = storageRef.child(ownerId+"/"+filename);
+            final StorageReference childRef = storageRef.child(ownerId+"/"+filename);
 
+            String referenceLocation = ownerId+"/"+filename;
             //uploading the image
             UploadTask uploadTask = childRef.putFile(imageUri);
 
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    String taskSnapshopURL = downloadUrl.toString();
+
+                    final long ONE_MEGABYTE = 1024 * 1024;
+                    childRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            // Data for "images/island.jpg" is returns, use this as needed
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
+
+                    sendMessage(taskSnapshopURL,0l );
                     view.updateOnSendImage("File uploaded");
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

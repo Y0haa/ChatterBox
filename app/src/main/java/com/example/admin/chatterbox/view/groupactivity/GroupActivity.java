@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.groupactivity.DaggerGroupActivityComponent;
 import com.example.admin.chatterbox.model.chat.Chat;
-import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 
@@ -147,7 +146,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     public void updateOnSendImage(String something) {
         pd.dismiss();
         dialogBuilder.dismiss();
-        Toast.makeText(this, something, Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, something, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -180,7 +179,9 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 // Allow use to select Image
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
+                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+
 
                 break;
             case R.id.btnDialogUploadFile:
@@ -199,7 +200,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                btnSend.setImageBitmap(selectedImage);
+              //  btnSend.setImageBitmap(selectedImage);
 
                 // Progress Dialog start
                 pd.show();
@@ -212,15 +213,14 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 returnCursor.moveToFirst();
 
                 presenter.uploadImage(imageUri,
-                        CurrentStoredUser.getInstance().getUser().getId(),
                         returnCursor.getString(nameIndex));
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+               // Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You haven't picked a valid Image", Toast.LENGTH_LONG).show();
         }
     }
 }
