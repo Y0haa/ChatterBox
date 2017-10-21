@@ -7,6 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.joingroup.DaggerJoinGroupComponent;
@@ -20,16 +23,11 @@ import butterknife.ButterKnife;
 public class JoinGroup extends AppCompatActivity implements JoinGroupContract.View, JoinGroupRecyclerViewAdapter.OnListInteractionListener {
     private static final String TAG = "JoinGroupTag";
 
-//    @BindView(R.id.rvJoin)
-//    RecyclerView rvJoin;
-//    @BindView(R.id.etJoin)
-//    EditText etJoin;
-//    @BindView(R.id.btnJoin)
-//    ImageButton btnJoin;
 
     RecyclerView rvGroupList;
     RecyclerView.LayoutManager layoutManager;
     RecyclerView.ItemAnimator itemAnimator;
+    SearchView etSearchView;
 
     Button btnSearchGroup;
     private DatabaseReference root;
@@ -47,6 +45,30 @@ public class JoinGroup extends AppCompatActivity implements JoinGroupContract.Vi
         btnSearchGroup = (Button) findViewById(R.id.btnJoin);
         rvGroupList = (RecyclerView) findViewById(R.id.rvJoinGroup);
         Log.d(TAG, "onCreate: " + root.toString());
+
+        etSearchView = (SearchView) findViewById(R.id.svJoinGroup);
+
+        etSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+//                public class DatabaseTable {
+//                    private final DatabaseOpenHelper mDatabaseOpenHelper;
+//
+//                    public DatabaseTable(Context context) {
+//                        mDatabaseOpenHelper = new DatabaseOpenHelper(context);
+//                    }
+//                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
     }
 
     @Override

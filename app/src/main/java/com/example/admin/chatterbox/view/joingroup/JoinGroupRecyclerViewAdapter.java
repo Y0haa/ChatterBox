@@ -74,8 +74,6 @@ public class JoinGroupRecyclerViewAdapter extends RecyclerView.Adapter<JoinGroup
 
     }
 
-
-
     @Override
     public void onBindViewHolder(final JoinGroupRecyclerViewAdapter.ViewHolder holder, int position) {
 

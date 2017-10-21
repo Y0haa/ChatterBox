@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -16,6 +17,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.loginactivity.DaggerLoginActivityComponent;
@@ -39,15 +41,25 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.safetynet.SafetyNet;
+import com.google.android.gms.safetynet.SafetyNetApi;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+
+
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainRegisterActivity extends AppCompatActivity implements View.OnClickListener, MainLoginContract.View, GoogleApiClient.OnConnectionFailedListener {
+public class MainRegisterActivity extends AppCompatActivity implements View.OnClickListener, MainLoginContract.View,GoogleApiClient.ConnectionCallbacks,  GoogleApiClient.OnConnectionFailedListener {
+
+    final String SiteKey = "6LcnOTUUAAAAAI2u4E-bBYIvkpolHP0foB8lv7En";
+    final String SecretKey ="6LfAOTUUAAAAAPm2RRy3Wvzbl6sWomP1qyjdsvPU";
+    private GoogleApiClient mGoogleApiClient2;
+
 
     public static final String CHAT_PREFS = "ChatPrefs";
     public static final String DISPLAY_NAME_KEY = "username";
@@ -71,6 +83,10 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
     Button signOutButton;
     @BindView(R.id.disconnect_button)
     Button disconnectButton;
+    @BindView(R.id.resultCaptcha)
+    TextView tvRestult;
+
+    TextView tvResult;
 
     @Inject
     MainLoginPresenter mActionsListener;
@@ -100,6 +116,18 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
         standardLogin();
         facebookLogin();
         googleLogin();
+
+        tvResult = (TextView)findViewById(R.id.resultCaptcha);
+
+        mGoogleApiClient2 = new GoogleApiClient.Builder(this)
+                .addApi(SafetyNet.API)
+                .addConnectionCallbacks(MainRegisterActivity.this)
+                .addOnConnectionFailedListener(MainRegisterActivity.this)
+                .build();
+
+        mGoogleApiClient2.connect();
+
+
 
     }
 
@@ -187,7 +215,49 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void signUp(View view) {
-        attemptRegistration();
+        tvResult.setText("");
+
+        SafetyNet.SafetyNetApi.verifyWithRecaptcha(mGoogleApiClient2, SiteKey)
+                .setResultCallback(new ResultCallback<SafetyNetApi.RecaptchaTokenResult>() {
+                    @Override
+                    public void onResult(SafetyNetApi.RecaptchaTokenResult result) {
+                        Status status = result.getStatus();
+
+                        if ((status != null) && status.isSuccess()) {
+
+                            tvResult.setText("isSuccess()\n");
+                            // Indicates communication with reCAPTCHA service was
+                            // successful. Use result.getTokenResult() to get the
+                            // user response token if the user has completed
+                            // the CAPTCHA.
+
+                            if (!result.getTokenResult().isEmpty()) {
+
+                                tvResult.append("!result.getTokenResult().isEmpty()");
+
+                                // User response token must be validated using the
+                                // reCAPTCHA site verify API.
+                            }else{
+                                tvResult.append("result.getTokenResult().isEmpty()");
+                            }
+                        } else {
+
+//
+
+                            tvResult.setText("User Verified " +
+                                    "when communicating with the reCAPTCHA service.");
+
+                            attemptRegistration();
+
+                            // Use status.getStatusCode() to determine the exact
+                            // error code. Use this code in conjunction with the
+                            // information in the "Handling communication errors"
+                            // section of this document to take appropriate action
+                            // in your app.
+                        }
+                    }
+                });
+
     }
 
     private void attemptRegistration() {
@@ -260,6 +330,9 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this,
+                "onConnectionFailed():\n" + connectionResult.getErrorMessage(),
+                Toast.LENGTH_LONG).show();
 
     }
 
@@ -318,4 +391,19 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
     }
 
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Toast.makeText(this, "onConnected()", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+        Toast.makeText(this,
+                "onConnectionSuspended: " + i,
+                Toast.LENGTH_LONG).show();
+
+
+    }
 }

@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".view.mainactivity.MainActivity"/>
+        <activity android:name=".view.mainactivity.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
         <activity android:name=".view.groupactivity.GroupActivity" />
         <activity android:name=".view.creategroupactivity.CreateGroupActivity" />
 

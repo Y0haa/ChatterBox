@@ -7,7 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.admin.chatterbox.view.mainactivity.MainActivity">
+    tools:context="com.example.admin.chatterbox.view.mainactivity.MainActivity"
+    android:background="@drawable/p1">
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,13 +20,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <Button
             android:id="@+id/btnCreate"
@@ -32,7 +36,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
             android:onClick="GroupButton"
-            android:text="@string/create_group" />
+            android:text="@string/create_group"
+            android:background="@color/btn_press_color"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/btnJoin"
@@ -40,7 +46,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
             android:onClick="GroupButton"
-            android:text="@string/join_group" />
+            android:text="@string/join_group"
+            android:background="@color/com_facebook_blue"
+            android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            android:onClick="GroupButton"
+            android:text="@string/join_group"
+            android:background="@color/com_facebook_blue"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/btnProfile"
@@ -48,7 +65,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
             android:onClick="ProfileButton"
-            android:text="@string/profile" />
+            android:text="@string/profile"
+            android:background="@color/colorBackground"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 

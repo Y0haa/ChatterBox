@@ -13,22 +13,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Button
-            android:onClick="JoinGroup"
-            android:layout_toRightOf="@+id/etInputGroupName"
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Search" />
+        <SearchView
+            android:id="@+id/svJoinGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-        <EditText
-
-            android:id="@+id/etInputGroupName"
-            android:layout_width="300sp"
-            android:layout_height="50dp"
-            android:hint="Enter Group Name" />
 
     </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rvSearchGroup"/>
 
 
     <android.support.v7.widget.RecyclerView
