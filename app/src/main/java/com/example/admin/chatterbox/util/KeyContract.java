@@ -1,6 +1,6 @@
 package com.example.admin.chatterbox.util;
 
-import android.content.res.Resources;
+import android.content.Context;
 
 import com.example.admin.chatterbox.R;
 
@@ -9,5 +9,9 @@ import com.example.admin.chatterbox.R;
  */
 
 public class KeyContract {
-    public static final String GIPHY_KEY = Resources.getSystem().getString(R.string.GIPHY_KEY);
+    public static String  GIPHY_KEY;
+
+    public static void setUpKey(Context c) {
+        GIPHY_KEY = c.getString(R.string.GIPHY_KEY);
+    }
 }

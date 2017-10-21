@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.groupactivity.DaggerGroupActivityComponent;
 import com.example.admin.chatterbox.model.chat.Chat;
+import com.example.admin.chatterbox.util.KeyContract;
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 
@@ -56,6 +57,9 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+
+        KeyContract.setUpKey(this);
+
         ButterKnife.bind(this);
 
         SetupDagger();
