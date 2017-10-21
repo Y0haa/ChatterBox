@@ -6,6 +6,7 @@
         <TextView
             android:layout_marginTop="15sp"
             android:text="sample"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:id="@+id/tvGroupTitle"
             android:layout_width="match_parent"

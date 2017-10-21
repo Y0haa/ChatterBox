@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.admin.chatterbox.view.creategroupactivity.CreateGroupActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/p4">
 
 
     <TextView
@@ -14,19 +15,23 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Check"
-
+        android:textColor="@color/blue"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/etInputGroupName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Group Name" />
+        android:hint="Group Name"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"/>
 
     <Button
         android:text="Create Group"
         android:id="@+id/btnCreateGroup"
         android:onClick="createGroupClicks"
+        android:textColor="@color/white"
+        android:background="@color/btn_press_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

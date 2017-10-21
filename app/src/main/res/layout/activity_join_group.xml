@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.admin.chatterbox.view.joingroup.JoinGroup">
+    tools:context="com.example.admin.chatterbox.view.joingroup.JoinGroup"
+    android:background="@drawable/p5">
 
     <RelativeLayout
         android:layout_width="wrap_content"

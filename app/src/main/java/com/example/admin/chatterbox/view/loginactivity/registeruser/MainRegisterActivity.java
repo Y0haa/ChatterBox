@@ -226,6 +226,8 @@ public class MainRegisterActivity extends AppCompatActivity implements View.OnCl
                         if ((status != null) && status.isSuccess()) {
 
                             tvResult.setText("isSuccess()\n");
+
+                            attemptRegistration();
                             // Indicates communication with reCAPTCHA service was
                             // successful. Use result.getTokenResult() to get the
                             // user response token if the user has completed
