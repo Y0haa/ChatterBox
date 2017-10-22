@@ -231,15 +231,16 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
     }
 
     @Override
-    public void uploadImage(Uri imageUri, String filename) {
-        if (imageUri != null) {
+    public void uploadAFile(Uri fileUri, final String filename, final String typeOfFile) {
+
+        if (fileUri != null) {
 
             //Storing in unique location
             final StorageReference childRef = storageRef.child(ownerId + "/" + filename);
 
             String referenceLocation = ownerId + "/" + filename;
             //uploading the image
-            UploadTask uploadTask = childRef.putFile(imageUri);
+            UploadTask uploadTask = childRef.putFile(fileUri);
 
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -260,8 +261,16 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
                         }
                     });
 
-                    sendMessage(taskSnapshopURL, 0l);
-                    view.updateOnSendImage("File uploaded");
+if(typeOfFile.equals("UPLOADED_IMAGE")) {
+    sendMessage("/UPLOADIMG " + taskSnapshopURL, 0l);
+    view.updateOnSendImage("File uploaded");
+}
+else if(typeOfFile.equals("UPLOADED_DOCUMENT")) {
+    //sendMessage("/UPLOADDOC " + taskSnapshopURL, 0l);
+    sendMessage("/UPLOADDOC " +filename+" "+ taskSnapshopURL, 0l);
+    view.updateOnSendImage("File uploaded");
+
+}
 
                 }
             }).addOnFailureListener(new OnFailureListener() {

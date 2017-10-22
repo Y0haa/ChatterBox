@@ -1,6 +1,7 @@
 package com.example.admin.chatterbox.view.groupactivity;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -15,18 +16,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.admin.chatterbox.R;
-import com.example.admin.chatterbox.glide.GlideApp;
+import com.example.admin.chatterbox.download.DownloadTask;
 import com.example.admin.chatterbox.model.chat.Chat;
 import com.example.admin.chatterbox.util.Commands;
 import com.example.admin.chatterbox.util.CurrentStoredUser;
+import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
+import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerViewAdapter.ViewHolder> {
@@ -36,8 +37,13 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     private final List<Chat> chats;
     private final OnListInteractionListener mListener;
     private final DatabaseReference databaseReference;
-    private final DatabaseReference databaseReferenceUsers;
     private final String groupId;
+    Effectstype effect;
+    NiftyDialogBuilder dialogBuilder;
+    String imageURL;
+    ViewGroup parent;
+
+
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -74,7 +80,6 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                                    Context context) {
         groupId = id;
         this.databaseReference = databaseReference.child("Groups").child(id).child("messages");
-        this.databaseReferenceUsers = databaseReference.child("users");
         Log.d(TAG, "ChatRecyclerViewAdapter: " + databaseReference.toString());
         this.databaseReference.addChildEventListener(childEventListener);
         mValues = new ArrayList<>();
@@ -85,6 +90,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        this.parent = parent;
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_view_chat, parent, false);
         return new ViewHolder(view);
@@ -94,36 +100,6 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         //holder.mItem = getItem(position);
         holder.mItem = chats.get(position);
-        HashMap<String, String> owner;
-
-        databaseReferenceUsers.orderByChild("id").equalTo(holder.mItem.getOwnerId())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d(TAG, "onBindViewHolder: " + holder.mItem.getOwnerId());
-
-                        for (DataSnapshot ds :
-                                dataSnapshot.getChildren()) {
-
-                            if (ds.getValue() != null) {
-                                //Log.d(TAG, "onDataChange: " + dataSnapshot.getValue().toString());
-                                HashMap<String, String> owner = (HashMap<String, String>) ds.getValue();
-                                //owner.toString();
-                                Log.d(TAG, "onDataChange: image " + owner.get("userImage"));
-                                if (owner.get("userImage") != null)
-                                    GlideApp.with(context).load(owner.get("userImage")).into(holder.ivImage);
-                                else
-                                    GlideApp.with(context).load(R.drawable.shotgunsamurai).into(holder.ivImage);
-                                break;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
 
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
@@ -147,8 +123,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                     holder.tvMsg.setBackgroundResource(R.drawable.you_speechbubble);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                        holder.cvImg.setVisibility(CardView.VISIBLE);
                         holder.ivImage.setVisibility(ImageView.VISIBLE);
+                        holder.cvImg.setVisibility(CardView.VISIBLE);
                         lp.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lp.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
                         lpGif.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -160,30 +136,14 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 //holder.tvAuthor.setText(holder.mItem.getOwner());
             }
 
-            //PABLO IF YOU WANT TO USE THIS CODE ADD IT TO THE doCommand METHOD
-            //WE CAN DISCUSS HEIGHT LIMITS LATER
-
-            /*//Getting images that users posted
-            if (URLUtil.isValidUrl(holder.mItem.getPost())) {
-                holder.ivGif.setVisibility(View.VISIBLE);
-                holder.tvMsg.setVisibility(View.INVISIBLE);
-                holder.ivGif.getLayoutParams().height = 300;
-                Glide.with(context).load(holder.mItem.getPost()).into(holder.ivGif);
-            }*/
-
-
             if (holder.mItem.getPost().charAt(0) != '/') {
                 holder.tvMsg.setVisibility(View.VISIBLE);
                 holder.tvMsg.setLayoutParams(lp);
                 message += holder.mItem.getPost();
                 holder.tvMsg.setText(message);
-                holder.ivGif.setVisibility(View.GONE);
-            } else if (URLUtil.isValidUrl(holder.mItem.getPost())) {
-                holder.ivGif.setVisibility(View.VISIBLE);
-                holder.tvMsg.setVisibility(View.INVISIBLE);
-                //holder.ivGif.getLayoutParams().height = 300;
-                Glide.with(context).load(holder.mItem.getPost()).into(holder.ivGif);
-            } else {
+                holder.ivGif.setVisibility(View.INVISIBLE);
+            }
+            else {
                 holder.ivGif.setVisibility(View.VISIBLE);
                 holder.tvMsg.setVisibility(View.INVISIBLE);
                 String cmd = holder.mItem.getPost().substring(1);
@@ -203,7 +163,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         });
     }
 
-    private void doCommand(ViewHolder holder, String cmd) {
+    private void doCommand(final ViewHolder holder, String cmd) {
+        Log.d(TAG, "doCommand: " +cmd);
         String args = cmd.substring(cmd.indexOf(' ') + 1);
         if (cmd.contains(" ")) {
             cmd = cmd.substring(0, cmd.indexOf(' '));
@@ -215,8 +176,135 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
             case GIPHY:
                 Glide.with(context).asGif().load(args).into(holder.ivGif);
+                holder.ivGif.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        viewPopUp(holder.ivGif);
+                    }
+                });
                 break;
+            case UPLOADIMG :
+                imageURL = holder.mItem.getPost().substring(11, Math.min(holder.mItem.getPost().length(), holder.mItem.getPost().length()));
+                if (URLUtil.isValidUrl(imageURL)) {
+                    holder.ivGif.setVisibility(View.VISIBLE);
+                    holder.tvMsg.setVisibility(View.INVISIBLE);
+                    //holder.ivGif.getLayoutParams().height = 300;
+                    Glide.with(context).load(imageURL).into(holder.ivGif);
+                    holder.ivGif.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            viewPopUp(holder.ivGif);
+                            //Log.d(TAG, "onClick: "+view.getTransitionName().toString());
+                        }
+                    });
+
+                }
+                break;
+
+            case UPLOADDOC:
+                imageURL =args;
+                final String filename;
+                final String validUrl = args.substring(args.indexOf(' ') + 1);
+                if (args.contains(" ")) {
+                    filename = args.substring(0, args.indexOf(' '));
+
+                    if (URLUtil.isValidUrl(validUrl)) {
+                        holder.ivGif.setVisibility(View.VISIBLE);
+                        holder.tvMsg.setVisibility(View.INVISIBLE);
+                        //holder.ivGif.getLayoutParams().height = 300;
+                        Drawable myDrawable = context.getResources().getDrawable(R.drawable.yoko);
+                        holder.ivGif.setImageDrawable(myDrawable);
+
+                        Log.d(TAG, "file complete url: " + imageURL);
+                        Log.d(TAG, "FILE url: " + validUrl);
+
+                        Log.d(TAG, "file name: " + filename);
+                        // Glide.with(context).load(imageURL).into(holder.ivGif);
+                        //holder.ivGif
+
+                        //--------------------
+                        holder.ivGif.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //  Log.d(TAG, "onClick: " + validUrl);
+                                    new DownloadTask(validUrl, filename);
+                                //context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+                            }
+                        });
+                    }
+                }
+
+                break;
+
         }
+    }
+
+    private void viewPopUp(ImageView ivGif) {
+        Drawable myDrawable = ivGif.getDrawable();
+        //    ImageView imageView = (ImageView) view;
+        // Log.d(TAG, "onClick: "+imageView.getContentDescription());
+        // Log.d(TAG, "onClick: "+imageView.getId());
+        // Log.d(TAG, "onClick: "+ivGif.getContentDescription());
+        // Log.d(TAG, "onClick: "+ivGif.getId());
+        // imageView.getTag();
+        //ImageView ivDisplayFullImage = (ImageView) view.findViewById(R.id.ivDisplayFullImage);
+        //Glide.with(context).load(imageURL).into(ivDisplayFullImage);
+        effect = Effectstype.Fliph;
+        dialogBuilder= NiftyDialogBuilder.getInstance(context);
+
+        //---------------------
+
+        //                  Log.d(TAG, "onClick: "+ imageView.getContentDescription().toString());
+        //---------------
+        View view1 = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.custom_group_photo_dialog, parent, false);
+
+
+        ImageView ivDisplayFullImage = view1.findViewById(R.id.ivDisplayFullImage);
+
+        //Glide.with(context).load( imageURL).into(ivDisplayFullImage);
+        ivDisplayFullImage.setImageDrawable(myDrawable);
+        ivDisplayFullImage.getLayoutParams().height = 800;
+//
+        //  ivDisplayFullImage.setImageBitmap() imageView;
+        //  Glide.with(context).load( imageURL).into(ivDisplayFullImage);
+
+
+        dialogBuilder
+                .withTitle(null)                                  //.withTitle(null)  no title
+                .withMessage(null)                     //.withMessage(null)  no Msg
+                .withDialogColor("#C1C8E4")                               //def  | withDialogColor(int resid)                               //def
+                .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
+                .withDuration(700)                                          //def
+                .withEffect(effect)                                         //def Effectstype.Slidetop
+                .setCustomView(view1, context)         //.setCustomView(View or ResId,context)
+
+                .show();
+        //----------
+/*
+                    dialogBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface d) {
+                            ImageView ivDisplayFullImage = dialogBuilder.findViewById(R.id.ivDisplayFullImage);
+                           // Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                           //         R.drawable.whygoprodialogimage);
+                           // float imageWidthInPX = (float)image.getWidth();
+
+ //                           LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(Math.round(imageWidthInPX),
+   //                                 Math.round(imageWidthInPX * (float)icon.getHeight() / (float)icon.getWidth()));
+     //                       image.setLayoutParams(layoutParams);
+
+                            Glide.with(context).load(imageURL).into(ivDisplayFullImage);
+
+
+                        }
+                    });
+            */
+        //---------
+        // Glide.with(context).load(imageURL).into(ivDisplayFullImage);
+        //Toast.makeText(context, "power", Toast.LENGTH_SHORT).show();
+
     }
 
     private Chat getItem(int position) {
@@ -254,6 +342,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
             tvMsg = view.findViewById(R.id.tvMessage);
             ivImage = view.findViewById(R.id.ivAuthorImg);
             ivGif = view.findViewById(R.id.ivGif);
+
         }
 
         @Override
@@ -268,3 +357,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         void onListUpdate();
     }
 }
+
+
+
+

@@ -3,8 +3,6 @@ package com.example.admin.chatterbox.view.groupactivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -24,9 +22,6 @@ import com.example.admin.chatterbox.util.KeyContract;
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -36,7 +31,9 @@ import butterknife.OnClick;
 public class GroupActivity extends AppCompatActivity implements ChatRecyclerViewAdapter.OnListInteractionListener, GroupActivityContract.View {
     public static final String TAG = "GroupActivity";
     private static final int RESULT_LOAD_IMG = 1;
+    private static final int PICKFILE_REQUEST_CODE = 2;
     Effectstype effect;
+    NiftyDialogBuilder dialogBuilder;
     @BindView(R.id.rvChat)
     RecyclerView rvChat;
     @BindView(R.id.etMsg)
@@ -52,7 +49,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     private ChatRecyclerViewAdapter mAdapter;
     private String id;
     ProgressDialog pd;
-    NiftyDialogBuilder dialogBuilder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +147,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     public void updateOnSendImage(String something) {
         pd.dismiss();
         dialogBuilder.dismiss();
+
       //  Toast.makeText(this, something, Toast.LENGTH_SHORT).show();
     }
 
@@ -189,7 +187,18 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
 
                 break;
             case R.id.btnDialogUploadFile:
-                Toast.makeText(this, "File TEST ", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                String[] mimetypes = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword","application/pdf"};
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+                /*
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("pdf/*");
+                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+*/
+              //  Toast.makeText(this, "File TEST ", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -198,12 +207,13 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
 
+
         if (resultCode == RESULT_OK) {
 
-            try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+           // try {
+                final Uri fileUri = data.getData();
+                //final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
               //  btnSend.setImageBitmap(selectedImage);
 
                 // Progress Dialog start
@@ -211,18 +221,25 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
 
                 // Get filename of Image
                 Cursor returnCursor =
-                        getContentResolver().query(imageUri, null, null, null, null);
+                        getContentResolver().query(fileUri, null, null, null, null);
 
                 int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                 returnCursor.moveToFirst();
 
-                presenter.uploadImage(imageUri,
-                        returnCursor.getString(nameIndex));
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            if(reqCode == 1)
+                    presenter.uploadAFile(fileUri,
+                        returnCursor.getString(nameIndex),
+                            "UPLOADED_IMAGE");
+
+            else if ( reqCode == 2)
+                presenter.uploadAFile(fileUri,
+                        returnCursor.getString(nameIndex),
+                        "UPLOADED_DOCUMENT");
+            //} catch (FileNotFoundException e) {
+             //   e.printStackTrace();
                // Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
-            }
+           // }
         } else {
             Toast.makeText(this, "You haven't picked a valid Image", Toast.LENGTH_LONG).show();
         }
