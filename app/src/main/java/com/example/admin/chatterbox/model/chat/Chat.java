@@ -44,4 +44,12 @@ public class Chat {
     public void setTime(Long time) {
         this.time = time;
     }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 }
