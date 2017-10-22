@@ -73,6 +73,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
                             Log.d("Chat", "user creation failed: ");
                             mRegisterActivityView.showDialog("Oops", "Registration attemp failed");
                         } else {
+                            CurrentStoredUser.getInstance().setUser(new User());
                             generateUserBaseOnAuthObject(mAuth);
                             verifyOrCreateIfUserExistOnDB(mAuth.getCurrentUser().getUid());
                             CurrentStoredUser.getInstance().setPassword(passwordUser);

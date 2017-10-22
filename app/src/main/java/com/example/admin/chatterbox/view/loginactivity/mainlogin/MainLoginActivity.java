@@ -29,11 +29,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -71,7 +66,7 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     public void signInExistingUser(View view) {
-
+/*
         DatabaseReference mDatabaseReference;
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected");
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
@@ -92,7 +87,9 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
+        verifyAuth();
+
     }
 
     private void verifyAuth() {
