@@ -74,31 +74,41 @@
             android:textColor="@color/purple"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/button_forgot_password_id"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:gravity="right"
+            android:onClick="forgotPassword"
+            android:padding="4dp"
+            android:text="Forgot your password?"
+            android:textSize="12dp" />
+
         <TextView
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:text="@string/or_with"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginBottom="13dp"
+            android:layout_marginTop="0dp"
+            android:text="@string/or_with"
             android:textColor="@color/purple"
-            android:layout_marginTop="13dp"
-            android:layout_marginBottom="13dp"/>
+            android:textSize="12sp" />
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
-            style="@style/LoginButton"
-            />
+            style="@style/LoginButton" />
 
         <TextView
-            android:text="@string/or_with"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="13dp"
             android:layout_marginTop="13dp"
+            android:text="@string/or_with"
             android:textColor="@color/purple"
-/>
+            android:textSize="12sp" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"

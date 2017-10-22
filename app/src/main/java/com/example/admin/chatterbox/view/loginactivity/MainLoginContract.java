@@ -25,6 +25,7 @@ public interface MainLoginContract {
         void signinFirebaseUser(String emailUser, String passwordUser);
         void updateFirebaseUser(User user, String password);
         void getLastUserOnDB(String uid);
+
     }
 
 }

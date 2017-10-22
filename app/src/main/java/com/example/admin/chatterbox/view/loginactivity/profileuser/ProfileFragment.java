@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.glide.GlideApp;
@@ -101,11 +98,11 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
     View viewNewPassword;
     @BindView(R.id.view_separator_current_password_id)
     View viewCurrenPassword;
+/*
 
-
-    @BindView(R.id.pBgVideoView)
+    @BindView(R.id.bgVideoView)
     VideoView mVideoView;
-
+*/
 
 
     @Inject
@@ -359,10 +356,9 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
     }
 
 
-   private void reproduceVideo() {
+/*    private void reproduceVideo() {
 
-
-        Uri uri = Uri.parse("android.resource://"+getActivity().getPackageName()+"/"+R.raw.video1);
+        Uri uri = Uri.parse("android.resource://"+getActivity().getPackageName()+"/"+R.raw.landscape);
 
         mVideoView.setVideoURI(uri);
         mVideoView.start();
@@ -373,11 +369,11 @@ public class ProfileFragment extends DialogFragment implements MainLoginContract
                 mediaPlayer.setLooping(true);
             }
         });
-    }
+    }*/
 
     @Override
     public void onStart() {
         super.onStart();
-        reproduceVideo();
+        //reproduceVideo();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.admin.chatterbox.view.loginactivity.signinuser;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -71,6 +73,7 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
     Button disconnectButton;
     @BindView(R.id.sign_out_and_disconnect)
     LinearLayout signoutAnddisconnectButton;
+
 
     @Inject
     MainLoginPresenter mActionsListener;
@@ -291,4 +294,39 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
             signoutAnddisconnectButton.setVisibility(View.GONE);
         }
     }
+
+    public void forgotPassword(View view) {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.custom_reset_password, null);
+        final EditText editText = alertLayout.findViewById(R.id.edit_text_email_id);
+
+        new AlertDialog.Builder(this)
+                .setView(alertLayout)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mActionsListener.forgotPassword(editText.getText().toString());
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
+
+/*    public void sentEmailToResetPassword(View view) {
+        switch (view.getId()) {
+            case R.id.button_reset_password_id:
+
+                *//*editTextEmailId = findViewById(R.id.edit_text_email_id);*//*
+               // mActionsListener.forgotPassword(editTextEmailId.getText().toString());
+                break;
+        }
+    }*/
+
 }

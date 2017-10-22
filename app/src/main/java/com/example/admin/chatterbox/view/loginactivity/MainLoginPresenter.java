@@ -389,4 +389,19 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
         }
     }
 
+    public void forgotPassword(String email) {
+
+        String emailSent = email.trim().toString();
+
+        FirebaseAuth.getInstance().sendPasswordResetEmail(emailSent)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TAG", "Email sent.");
+                            mRegisterActivityView.showDialog("Reset password", "Email sent.");
+                        }
+                    }
+                });
+    }
 }
