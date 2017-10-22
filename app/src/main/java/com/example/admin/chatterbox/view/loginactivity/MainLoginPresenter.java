@@ -332,6 +332,7 @@ public class MainLoginPresenter implements MainLoginContract.UserActionsListener
     public void getLastUserOnDB(String uid) {
         DatabaseReference mDatabaseReference;
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
         Query query = mDatabaseReference.child("users").orderByChild("id").equalTo(uid);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {

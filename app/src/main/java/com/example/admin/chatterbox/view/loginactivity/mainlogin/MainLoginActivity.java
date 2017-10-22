@@ -29,13 +29,18 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 
-public class MainLoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MainLoginContract.View{
+public class MainLoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, MainLoginContract.View {
 
     private FirebaseAuth mAuth;
 
@@ -67,15 +72,35 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     public void signInExistingUser(View view) {
 
+        DatabaseReference mDatabaseReference;
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(".info/connected");
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean connected = dataSnapshot.getValue(Boolean.class);
+                if (connected) {
+                    verifyAuth();
+                    System.out.println("connected");
+                } else {
+                    mAuth.signOut();
+                    verifyAuth();
+                    System.out.println("not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void verifyAuth() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //TODO REVIEW ISSUE WITH AUTHENTICATION AFTER MINUTES
-        if (currentUser != null){
+        if (currentUser != null) {
             Log.d("TAG", "onStart: " + currentUser.getDisplayName());
-            //CurrentStoredUser.generateUserBaseOnAuthObject(mAuth);
-            //saveDisplayName(CurrentStoredUser.getInstance().getUser().getEmail());
-            //callNextActivity();
             mActionsListener.getLastUserOnDB(mAuth.getCurrentUser().getUid());
-        } else{
+        } else {
             Log.d("TAG", "onStart: " + "No user");
             Intent intent = new Intent(this, MainSignInActivity.class);
             startActivity(intent);
@@ -88,11 +113,10 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
 
         reproduceVideo();
 
-
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null){
+        if (currentUser != null) {
             Log.d("TAG", "onStart: " + currentUser.getDisplayName());
-        } else{
+        } else {
             Log.d("TAG", "onStart: " + "No user");
         }
     }
@@ -111,17 +135,17 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     public void signOutAuth(View view) {
 
-        if (mAuth != null){
+        if (mAuth != null) {
             mAuth.signOut();
 
             Toast.makeText(this, "User logged out", Toast.LENGTH_SHORT).show();
 
-            try{
+            try {
                 LoginManager.getInstance().logOut();
-            }catch(Exception e){
+            } catch (Exception e) {
             }
 
-            try{
+            try {
                 GoogleApiClient mGoogleApiClient;
 
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -134,10 +158,13 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
                         .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                         .build();
 
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {@Override
-                public void onResult(@NonNull Status status) {}});
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                    }
+                });
 
-            }catch(Exception e){
+            } catch (Exception e) {
             }
         }
     }
@@ -152,7 +179,7 @@ public class MainLoginActivity extends AppCompatActivity implements GoogleApiCli
 
         mVideoView = (VideoView) findViewById(R.id.bgVideoView);
 
-        Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.landscape);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.landscape);
 
         mVideoView.setVideoURI(uri);
         mVideoView.start();
