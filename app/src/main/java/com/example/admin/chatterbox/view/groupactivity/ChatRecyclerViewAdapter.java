@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.download.DownloadTask;
+import com.example.admin.chatterbox.glide.GlideApp;
 import com.example.admin.chatterbox.model.chat.Chat;
 import com.example.admin.chatterbox.util.Commands;
 import com.example.admin.chatterbox.util.CurrentStoredUser;
@@ -26,8 +27,10 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerViewAdapter.ViewHolder> {
@@ -37,6 +40,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     private final List<Chat> chats;
     private final OnListInteractionListener mListener;
     private final DatabaseReference databaseReference;
+    private final DatabaseReference databaseReferenceUsers;
     private final String groupId;
     Effectstype effect;
     NiftyDialogBuilder dialogBuilder;
@@ -81,6 +85,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                                    Context context) {
         groupId = id;
         this.databaseReference = databaseReference.child("Groups").child(id).child("messages");
+        this.databaseReferenceUsers = databaseReference.child("users");
         Log.d(TAG, "ChatRecyclerViewAdapter: " + databaseReference.toString());
         this.databaseReference.addChildEventListener(childEventListener);
         mValues = new ArrayList<>();
@@ -99,8 +104,37 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        //holder.mItem = getItem(position);
         holder.mItem = chats.get(position);
+        HashMap<String, String> owner;
+
+        databaseReferenceUsers.orderByChild("id").equalTo(holder.mItem.getOwnerId())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onBindViewHolder: " + holder.mItem.getOwnerId());
+
+                        for (DataSnapshot ds :
+                                dataSnapshot.getChildren()) {
+
+                            if (ds.getValue() != null) {
+                                //Log.d(TAG, "onDataChange: " + dataSnapshot.getValue().toString());
+                                HashMap<String, String> owner = (HashMap<String, String>) ds.getValue();
+                                //owner.toString();
+                                Log.d(TAG, "onDataChange: image " + owner.get("userImage"));
+                                if (owner.get("userImage") != null)
+                                    GlideApp.with(context).load(owner.get("userImage")).into(holder.ivImage);
+                                else
+                                    GlideApp.with(context).load(R.drawable.shotgunsamurai).into(holder.ivImage);
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
@@ -118,10 +152,10 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                         holder.ivImage.setVisibility(ImageView.INVISIBLE);
                         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                        //lpGif.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        lpGif.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lprlDisplayImageContent.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lp.removeRule(RelativeLayout.RIGHT_OF);
-                       // lpGif.removeRule(RelativeLayout.RIGHT_OF);
+                        lpGif.removeRule(RelativeLayout.RIGHT_OF);
                         lprlDisplayImageContent.removeRule(RelativeLayout.RIGHT_OF);
                         holder.cvImg.setVisibility(CardView.INVISIBLE);
 
@@ -134,8 +168,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         holder.cvImg.setVisibility(CardView.VISIBLE);
                         lp.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lp.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
-                     //   lpGif.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                     //   lpGif.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
+                        lpGif.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        lpGif.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
                         lprlDisplayImageContent.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lprlDisplayImageContent.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
                         message = holder.mItem.getOwner() + "\n";
@@ -150,7 +184,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 holder.tvMsg.setLayoutParams(lp);
                 message += holder.mItem.getPost();
                 holder.tvMsg.setText(message);
-                holder.ivGif.setVisibility(View.INVISIBLE);
+                holder.ivGif.setVisibility(View.GONE);
                 holder.tvFileId.setVisibility(View.INVISIBLE);
             }
             else {
@@ -289,12 +323,6 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 .withEffect(effect)                                         //def Effectstype.Slidetop
                 .setCustomView(view1, context)         //.setCustomView(View or ResId,context)
                 .show();
-    }
-
-    private Chat getItem(int position) {
-        DataSnapshot snapShot = mValues.get(position);
-        Log.d(TAG, "getItem: " + snapShot.toString());
-        return snapShot.getValue(Chat.class);
     }
 
     @Override
