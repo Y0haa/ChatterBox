@@ -17,21 +17,23 @@
 
         <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100sp"
             android:background="@null"
             android:padding="2sp"
             android:src="@mipmap/dialog_image_button"
             android:onClick="dialogClicking"
-            android:id="@+id/btnDialogUploadImage"/>
+            android:id="@+id/btnDialogUploadImage"
+            android:layout_weight="1"/>
 
         <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100sp"
             android:background="@null"
             android:padding="2sp"
             android:src="@mipmap/dialog_document_button"
             android:onClick="dialogClicking"
-            android:id="@+id/btnDialogUploadFile"/>
+            android:id="@+id/btnDialogUploadFile"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

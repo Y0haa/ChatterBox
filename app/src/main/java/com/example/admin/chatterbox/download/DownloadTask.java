@@ -1,9 +1,17 @@
 package com.example.admin.chatterbox.download;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+
+import com.example.admin.chatterbox.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,22 +19,22 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 /**
  * Created by Admin on 10/22/2017.
  */
 public class DownloadTask {
 
     private static final String TAG = "DownloadTask";
-    //  private Context context;
-    //  private Button buttonText;
+      private Context context;
     private String downloadUrl = "", downloadFileName = "";
 
-    public DownloadTask(String validUrl, String filename) {
-        //   this.context = context;
-        //   this.buttonText = buttonText;
-        this.downloadUrl =validUrl;// "http://androhub.com/demo/demo.pdf";
+    public DownloadTask(Context context, String validUrl, String downloadFileName) {
+           this.context = context;
+        this.downloadUrl =validUrl;
 
-        downloadFileName =filename;/// downloadUrl.replace("http://androhub.com/demo/", "");//Create file name by picking download file name from URL
+        this.downloadFileName =downloadFileName;
         Log.e(TAG, downloadFileName);
 
         //Start Downloading Task
@@ -41,23 +49,50 @@ public class DownloadTask {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //      buttonText.setEnabled(false);
-            //      buttonText.setText(R.string.downloadStarted);//Set Button Text when download started
         }
 
         @Override
         protected void onPostExecute(Void result) {
             try {
                 if (outputFile != null) {
-                    //            buttonText.setEnabled(true);
-                    //            buttonText.setText(R.string.downloadCompleted);//If Download completed then change button text
+                    //---
+                    File myFile = new File(Environment.getExternalStorageDirectory() + "/"
+                            + "Download/"+downloadFileName);
+                    File file=myFile;
+                    Uri uri = Uri.fromFile(file);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+
+                    if (downloadUrl.toString().contains(".doc") || downloadUrl.toString().contains(".docx")) {
+                        // Word document
+                        intent.setDataAndType(uri, "application/msword");
+                    } else if(downloadUrl.toString().contains(".pdf")) {
+                        // PDF file
+                        intent.setDataAndType(uri, "application/pdf");
+                    } else {
+
+                        intent.setDataAndType(uri, "*/*");
+                    }
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    PendingIntent pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
+
+                    Notification noti = new Notification.Builder(context)
+                            .setContentTitle("Chatapp Download Notification!")
+                            .setContentText(downloadFileName).setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentIntent(pIntent).build();
+                    NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+                    noti.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                    notificationManager.notify(0, noti);
+
                 } else {
-                    //       buttonText.setText(R.string.downloadFailed);//If download failed change button text
+
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            //       buttonText.setEnabled(true);
-                            //       buttonText.setText(R.string.downloadAgain);//Change button text again after 3sec
+
                         }
                     }, 3000);
 
@@ -67,21 +102,17 @@ public class DownloadTask {
             } catch (Exception e) {
                 e.printStackTrace();
 
-                //Change button text if exception occurs
-                //  buttonText.setText(R.string.downloadFailed);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //   buttonText.setEnabled(true);
-                        //   buttonText.setText(R.string.downloadAgain);
+
                     }
                 }, 3000);
-                // Log.d(TAG, "onPostExecute: "+e.toString());
+
                 Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
                 Log.e(TAG, "Download Failed with Exception - " + e.toString());
 
             }
-
 
             super.onPostExecute(result);
         }
@@ -100,18 +131,11 @@ public class DownloadTask {
                             + " " + c.getResponseMessage());
 
                 }
-
-
-                //Get File if SD card is present
-                //if (new CheckForSDCard().isSDCardPresent()) {
-
                 apkStorage = new File(
                         Environment.getExternalStorageDirectory() + "/"
                                 + "Download");
                 Log.d(TAG, "doInBackground: "+ Environment.getExternalStorageDirectory() + "/"
                         + "Download");
-                // } else
-                //   Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
 
                 //If File is not present create directory
                 if (!apkStorage.exists()) {

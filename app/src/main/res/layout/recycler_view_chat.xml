@@ -34,11 +34,26 @@
         android:text="@string/sample_message"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textColor="@color/white" />
-
+<RelativeLayout
+    android:id="@+id/rlDisplayImageContent"
+    android:layout_toRightOf="@+id/cvAuthorImg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/cvAuthorImg"
-        android:id="@+id/ivGif"/>
 
+        android:id="@+id/ivGif"
+        />
+    <TextView
+        android:layout_centerHorizontal="true"
+
+        android:layout_below="@+id/ivGif"
+        android:textStyle="bold"
+        android:id="@+id/tvFileId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>
 </RelativeLayout>

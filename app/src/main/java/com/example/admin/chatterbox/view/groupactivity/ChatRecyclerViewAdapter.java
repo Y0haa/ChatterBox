@@ -44,6 +44,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     ViewGroup parent;
 
 
+
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -104,6 +105,9 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.tvMsg.getLayoutParams();
         RelativeLayout.LayoutParams lpGif = (RelativeLayout.LayoutParams) holder.ivGif.getLayoutParams();
+        RelativeLayout.LayoutParams lprlDisplayImageContent = (RelativeLayout.LayoutParams) holder.rlDisplayImageContent.getLayoutParams();
+        //lprlDisplayImageContent.height=300;
+
         String message = "";
         if (holder.mItem != null) {
             if (holder.mItem.getOwner() != null) {
@@ -114,10 +118,13 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
                         holder.ivImage.setVisibility(ImageView.INVISIBLE);
                         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                        lpGif.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        //lpGif.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        lprlDisplayImageContent.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lp.removeRule(RelativeLayout.RIGHT_OF);
-                        lpGif.removeRule(RelativeLayout.RIGHT_OF);
+                       // lpGif.removeRule(RelativeLayout.RIGHT_OF);
+                        lprlDisplayImageContent.removeRule(RelativeLayout.RIGHT_OF);
                         holder.cvImg.setVisibility(CardView.INVISIBLE);
+
                     }
                 } else {
                     holder.tvMsg.setBackgroundResource(R.drawable.you_speechbubble);
@@ -127,8 +134,10 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         holder.cvImg.setVisibility(CardView.VISIBLE);
                         lp.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lp.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
-                        lpGif.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                        lpGif.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
+                     //   lpGif.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                     //   lpGif.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
+                        lprlDisplayImageContent.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        lprlDisplayImageContent.addRule(RelativeLayout.RIGHT_OF, R.id.cvAuthorImg);
                         message = holder.mItem.getOwner() + "\n";
                     }
                 }
@@ -142,12 +151,17 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 message += holder.mItem.getPost();
                 holder.tvMsg.setText(message);
                 holder.ivGif.setVisibility(View.INVISIBLE);
+                holder.tvFileId.setVisibility(View.INVISIBLE);
             }
             else {
                 holder.ivGif.setVisibility(View.VISIBLE);
                 holder.tvMsg.setVisibility(View.INVISIBLE);
                 String cmd = holder.mItem.getPost().substring(1);
+                holder.tvFileId.setVisibility(ImageView.INVISIBLE);
+                holder.tvFileId.setText("");
+                holder.ivGif.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
                 doCommand(holder, cmd);
+              //  holder.tvFileId.setVisibility(ImageView.INVISIBLE);
             }
         }
 
@@ -184,11 +198,14 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 });
                 break;
             case UPLOADIMG :
+
                 imageURL = holder.mItem.getPost().substring(11, Math.min(holder.mItem.getPost().length(), holder.mItem.getPost().length()));
                 if (URLUtil.isValidUrl(imageURL)) {
+                    holder.tvFileId.setVisibility(ImageView.VISIBLE);
                     holder.ivGif.setVisibility(View.VISIBLE);
                     holder.tvMsg.setVisibility(View.INVISIBLE);
                     //holder.ivGif.getLayoutParams().height = 300;
+                    holder.ivGif.getLayoutParams().height = 300;
                     Glide.with(context).load(imageURL).into(holder.ivGif);
                     holder.ivGif.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -210,26 +227,24 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                     filename = args.substring(0, args.indexOf(' '));
 
                     if (URLUtil.isValidUrl(validUrl)) {
+                        holder.tvFileId.setVisibility(ImageView.VISIBLE);
                         holder.ivGif.setVisibility(View.VISIBLE);
                         holder.tvMsg.setVisibility(View.INVISIBLE);
                         //holder.ivGif.getLayoutParams().height = 300;
-                        Drawable myDrawable = context.getResources().getDrawable(R.drawable.yoko);
+                        Drawable myDrawable = context.getResources().getDrawable(R.drawable.document_icon);
                         holder.ivGif.setImageDrawable(myDrawable);
 
                         Log.d(TAG, "file complete url: " + imageURL);
                         Log.d(TAG, "FILE url: " + validUrl);
-
                         Log.d(TAG, "file name: " + filename);
-                        // Glide.with(context).load(imageURL).into(holder.ivGif);
-                        //holder.ivGif
 
+                        holder.tvFileId.setText(filename);
                         //--------------------
                         holder.ivGif.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 //  Log.d(TAG, "onClick: " + validUrl);
-                                    new DownloadTask(validUrl, filename);
-                                //context.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+                                    new DownloadTask(context, validUrl, filename);
                             }
                         });
                     }
@@ -253,10 +268,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         effect = Effectstype.Fliph;
         dialogBuilder= NiftyDialogBuilder.getInstance(context);
 
-        //---------------------
 
-        //                  Log.d(TAG, "onClick: "+ imageView.getContentDescription().toString());
-        //---------------
         View view1 = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.custom_group_photo_dialog, parent, false);
 
@@ -266,9 +278,6 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         //Glide.with(context).load( imageURL).into(ivDisplayFullImage);
         ivDisplayFullImage.setImageDrawable(myDrawable);
         ivDisplayFullImage.getLayoutParams().height = 800;
-//
-        //  ivDisplayFullImage.setImageBitmap() imageView;
-        //  Glide.with(context).load( imageURL).into(ivDisplayFullImage);
 
 
         dialogBuilder
@@ -279,32 +288,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 .withDuration(700)                                          //def
                 .withEffect(effect)                                         //def Effectstype.Slidetop
                 .setCustomView(view1, context)         //.setCustomView(View or ResId,context)
-
                 .show();
-        //----------
-/*
-                    dialogBuilder.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface d) {
-                            ImageView ivDisplayFullImage = dialogBuilder.findViewById(R.id.ivDisplayFullImage);
-                           // Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
-                           //         R.drawable.whygoprodialogimage);
-                           // float imageWidthInPX = (float)image.getWidth();
-
- //                           LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(Math.round(imageWidthInPX),
-   //                                 Math.round(imageWidthInPX * (float)icon.getHeight() / (float)icon.getWidth()));
-     //                       image.setLayoutParams(layoutParams);
-
-                            Glide.with(context).load(imageURL).into(ivDisplayFullImage);
-
-
-                        }
-                    });
-            */
-        //---------
-        // Glide.with(context).load(imageURL).into(ivDisplayFullImage);
-        //Toast.makeText(context, "power", Toast.LENGTH_SHORT).show();
-
     }
 
     private Chat getItem(int position) {
@@ -331,8 +315,10 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         public final TextView tvMsg;
         private final ImageView ivImage;
         private final ImageView ivGif;
+        private final TextView tvFileId;
         public Chat mItem;
         private final CardView cvImg;
+        private final RelativeLayout rlDisplayImageContent;
 
         public ViewHolder(View view) {
             super(view);
@@ -342,6 +328,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
             tvMsg = view.findViewById(R.id.tvMessage);
             ivImage = view.findViewById(R.id.ivAuthorImg);
             ivGif = view.findViewById(R.id.ivGif);
+            tvFileId = view.findViewById(R.id.tvFileId);
+            rlDisplayImageContent = view.findViewById(R.id.rlDisplayImageContent);
 
         }
 

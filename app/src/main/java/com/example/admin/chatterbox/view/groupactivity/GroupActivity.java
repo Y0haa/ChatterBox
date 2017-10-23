@@ -1,11 +1,16 @@
 package com.example.admin.chatterbox.view.groupactivity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,6 +54,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     private ChatRecyclerViewAdapter mAdapter;
     private String id;
     ProgressDialog pd;
+    private int STORAGE_PERMISSION_CODE = 23;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +82,16 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
 
         pd = new ProgressDialog(this);
         pd.setMessage("Uploading....");
+
+        //----------permissions
+        if(isReadStorageAllowed()){
+
+            //Existing the method with return
+            return;
+        }
+
+        //If the app has not the permission then asking for the permission
+        requestStoragePermission();
     }
 
     @Override
@@ -168,7 +184,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 .withMessage(null)                     //.withMessage(null)  no Msg
                 .withDialogColor("#C1C8E4")                               //def  | withDialogColor(int resid)                               //def
                 .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
-                .withDuration(700)                                          //def
+                .withDuration(400)                                          //def
                 .withEffect(effect)                                         //def Effectstype.Slidetop
                 .setCustomView(R.layout.custom_upload_dialog, this)         //.setCustomView(View or ResId,context)
                 .show();
@@ -193,12 +209,7 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 String[] mimetypes = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword","application/pdf"};
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
                 startActivityForResult(intent, PICKFILE_REQUEST_CODE);
-                /*
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("pdf/*");
-                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
-*/
-              //  Toast.makeText(this, "File TEST ", Toast.LENGTH_SHORT).show();
+
                 break;
         }
     }
@@ -209,14 +220,8 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
 
 
         if (resultCode == RESULT_OK) {
-
-           // try {
                 final Uri fileUri = data.getData();
-                //final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-              //  btnSend.setImageBitmap(selectedImage);
 
-                // Progress Dialog start
                 pd.show();
 
                 // Get filename of Image
@@ -236,12 +241,55 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 presenter.uploadAFile(fileUri,
                         returnCursor.getString(nameIndex),
                         "UPLOADED_DOCUMENT");
-            //} catch (FileNotFoundException e) {
-             //   e.printStackTrace();
-               // Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
-           // }
+
         } else {
             Toast.makeText(this, "You haven't picked a valid Image", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //-----------------permissions
+    //We are calling this method to check the permission status
+    private boolean isReadStorageAllowed() {
+        //Getting the permission status
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        //If permission is granted returning true
+        if (result == PackageManager.PERMISSION_GRANTED)
+            return true;
+
+        //If permission is not granted returning false
+        return false;
+    }
+
+    //Requesting permission
+    private void requestStoragePermission(){
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+            //If the user has denied the permission previously your code will come to this block
+            //Here you can explain why you need this permission
+            //Explain here why you need this permission
+        }
+
+        //And finally ask for the permission
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+    }
+
+    //This method will be called when the user will tap on allow or deny
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        //Checking the request code of our request
+        if(requestCode == STORAGE_PERMISSION_CODE){
+
+            //If permission is granted
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                //Displaying a toast
+
+            }else{
+                //Displaying another toast if permission is not granted
+
+            }
         }
     }
 }
