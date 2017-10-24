@@ -347,8 +347,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 .withTitleColor("#ffffff")                                  //def
                // .withDividerColor("#11000000")                              //def
                 .withMessage("Would you like to download " + filename + " ?")                     //.withMessage(null)  no Msg
-                .withMessageColor(R.color.dialog_message_color)                              //def  | withMessageColor(int resid)
-                .withDialogColor(R.color.dialog_color)                               //def  | withDialogColor(int resid)                               //def
+                .withMessageColor("#33ebf4")                              //def  | withMessageColor(int resid)
+                .withDialogColor("#770a7f")                               //def  | withDialogColor(int resid)                               //def
                 //    .withIcon(getResources().getDrawable(R.drawable.icon))
                 .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
                 .withDuration(700)                                          //def
@@ -426,7 +426,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         dialogBuilder
                 .withTitle(null)                                  //.withTitle(null)  no title
                 .withMessage(null)                     //.withMessage(null)  no Msg
-                .withDialogColor(R.color.gray)                               //def  | withDialogColor(int resid)                               //def
+                .withDialogColor("#770a7f")                               //def  | withDialogColor(int resid)                               //def
                 .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
                 .withDuration(700)                                          //def
                 .withEffect(effect)                                         //def Effectstype.Slidetop

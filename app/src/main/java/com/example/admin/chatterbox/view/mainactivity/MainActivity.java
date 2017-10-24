@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
                         .withTitleColor("#ffffff")                                  //def
                        // .withDividerColor("#33ebf4")                              //def
                         .withMessage(null)                     //.withMessage(null)  no Msg
-                        .withMessageColor(R.color.dialog_message_color)                              //def  | withMessageColor(int resid)
-                        .withDialogColor(R.color.dialog_color)                               //def  | withDialogColor(int resid)                               //def
+                        .withMessageColor("#33ebf4")                              //def  | withMessageColor(int resid)
+                        .withDialogColor("#770a7f")                               //def  | withDialogColor(int resid)                               //def
                         //  .withIcon(getResources().getDrawable(R.drawable.icon))
                         .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
                         .withDuration(700)                                          //def
