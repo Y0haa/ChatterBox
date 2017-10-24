@@ -1,6 +1,7 @@
 package com.example.admin.chatterbox.view.joingroup;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class JoinGroupRecyclerViewAdapter extends RecyclerView.Adapter<JoinGroupRecyclerViewAdapter.ViewHolder> {
 
+    private static final String TAG = "JoinGroupTag";
     private final OnListInteractionListener listener;
     private OnListInteractionListener gListener;
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
@@ -33,8 +35,18 @@ public class JoinGroupRecyclerViewAdapter extends RecyclerView.Adapter<JoinGroup
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            mValues.add(dataSnapshot);
-            notifyDataSetChanged();
+            Log.d(TAG, "onChildAdded: " + dataSnapshot.getValue().toString());
+
+            try{
+                Group tmp = dataSnapshot.getValue(Group.class);
+                if(tmp.getTitle() != null && tmp.getTitle().compareTo("") != 0) {
+                    mValues.add(dataSnapshot);
+                    notifyDataSetChanged();
+                }
+            }
+            catch (Exception e){
+
+            }
         }
 
         @Override

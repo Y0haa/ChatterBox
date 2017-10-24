@@ -15,10 +15,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <SearchView
-            android:id="@+id/svContactsGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <!--<SearchView-->
+            <!--android:id="@+id/svContactsGroup"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
 
 
     </RelativeLayout>
@@ -26,16 +26,16 @@
 
 
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rvSearchContacts"/>
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/rvSearchContacts"/>-->
+
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rvContacts"/>
-
 
 
 

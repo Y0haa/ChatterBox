@@ -62,7 +62,8 @@
         </activity>
         <activity android:name=".view.loginactivity.signinuser.MainSignInActivity" />
         <activity android:name=".view.loginactivity.registeruser.MainRegisterActivity" />
-        <activity android:name=".view.joingroup.JoinGroup" />
+        <activity android:name=".view.joingroup.JoinGroup"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
         <activity
             android:name=".view.loginactivity.mainlogin.MainLoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
@@ -70,7 +71,8 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.contacts.Contacts"></activity>
+        <activity android:name=".view.contacts.Contacts"
+                   android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"></activity>
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@ import android.widget.SearchView;
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.Contacts.DaggerContactsComponent;
 import com.example.admin.chatterbox.model.chat.User;
+import com.example.admin.chatterbox.util.CurrentStoredUser;
 import com.example.admin.chatterbox.view.groupactivity.GroupActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -83,7 +84,25 @@ public class Contacts extends AppCompatActivity implements ContactsContract.View
 
         Intent intent = new Intent(this, GroupActivity.class);
         Log.d(TAG, "onListInteractionListener: " + id);
-        intent.putExtra("ID", id);
+
+
+        String myId = CurrentStoredUser.getInstance().getUser().getId();//you
+       String theirId =  mItem.getId();//the other one
+
+        String theirEmail = mItem.getEmail();
+        String myEmail = CurrentStoredUser.getInstance().getUser().getEmail();//you
+
+        String CombindId;
+
+        if(myEmail.compareTo(theirEmail) > 0 ){
+            CombindId = myId+theirId;
+        }
+        else {
+            CombindId = theirId+myId;
+        }
+
+        intent.putExtra("ID", CombindId);
+
         startActivity(intent);
 
     }

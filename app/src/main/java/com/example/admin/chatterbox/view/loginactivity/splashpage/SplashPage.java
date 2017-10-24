@@ -35,6 +35,8 @@ public class SplashPage extends AppCompatActivity {
         }, SPLASH_TIME_OUT);
     }
 
+
+
     private void reproduceVideo() {
         VideoView mVideoView;
 

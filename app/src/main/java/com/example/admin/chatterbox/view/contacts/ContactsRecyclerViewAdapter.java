@@ -95,7 +95,7 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
         DataSnapshot snapShot = mValues.get(position);
         String id = snapShot.getKey();
         User tmp = snapShot.getValue(User.class);
-        tmp.setId(id);
+        //tmp.setId(id);
         return tmp;
     }
 
