@@ -5,5 +5,5 @@ package com.example.admin.chatterbox.util;
  */
 
 public enum Commands {
-    HELP, GIPHY, YOKO, UPLOADDOC, UPLOADIMG
+    HELP, GIPHY, G, GIF, YOKO, UPLOADDOC, UPLOADIMG
 }

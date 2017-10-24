@@ -150,15 +150,14 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                     holder.tvMsg.setBackgroundResource(R.drawable.me_speechbubble);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         holder.tvMsg.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                        holder.ivImage.setVisibility(ImageView.INVISIBLE);
+                        holder.ivImage.setVisibility(ImageView.GONE);
                         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lpGif.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lprlDisplayImageContent.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         lp.removeRule(RelativeLayout.RIGHT_OF);
                         lpGif.removeRule(RelativeLayout.RIGHT_OF);
                         lprlDisplayImageContent.removeRule(RelativeLayout.RIGHT_OF);
-                        holder.cvImg.setVisibility(CardView.INVISIBLE);
-
+                        holder.cvImg.setVisibility(CardView.GONE);
                     }
                 } else {
                     holder.tvMsg.setBackgroundResource(R.drawable.you_speechbubble);
