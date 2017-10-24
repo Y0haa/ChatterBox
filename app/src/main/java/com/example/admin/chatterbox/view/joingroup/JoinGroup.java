@@ -46,7 +46,7 @@ public class JoinGroup extends AppCompatActivity implements JoinGroupContract.Vi
         rvGroupList = (RecyclerView) findViewById(R.id.rvJoinGroup);
         Log.d(TAG, "onCreate: " + root.toString());
 
-        etSearchView = (SearchView) findViewById(R.id.svJoinGroup);
+       // etSearchView = (SearchView) findViewById(R.id.svJoinGroup);
 
         etSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
