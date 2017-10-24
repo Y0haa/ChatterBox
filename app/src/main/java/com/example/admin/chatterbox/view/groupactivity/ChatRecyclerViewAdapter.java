@@ -212,7 +212,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
     private void doCommand(final ViewHolder holder, String cmd) {
         Log.d(TAG, "doCommand: " +cmd);
-        String args = cmd.substring(cmd.indexOf(' ') + 1);
+        final String args = cmd.substring(cmd.indexOf(' ') + 1);
         if (cmd.contains(" ")) {
             cmd = cmd.substring(0, cmd.indexOf(' '));
         }
@@ -222,13 +222,26 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 break;
 
             case GIPHY:
+                Log.d(TAG, "args giphy: " + args);
+                final String giphyFilename = args.substring(args.lastIndexOf("/") + 1);
                 Glide.with(context).asGif().load(args).into(holder.ivGif);
                 holder.ivGif.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        viewPopUp(holder.ivGif);
+                        viewPopUp(holder.ivGif, args, giphyFilename);
                     }
                 });
+
+                holder.ivGif.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        //------------prompt user to download
+                        promptDownload(context, args, giphyFilename);
+                        //------------
+                        return false;
+                    }
+                });
+
                 break;
             case UPLOADIMG :
                 imageURL =args;
@@ -248,7 +261,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                             @Override
                             public void onClick(View view) {
 
-                                viewPopUp(holder.ivGif);
+                                viewPopUp(holder.ivGif, validUrlImg,filenameImg);
                                 //Log.d(TAG, "onClick: "+view.getTransitionName().toString());
                             }
                         });
@@ -362,7 +375,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 .show();
     }
 
-    private void viewPopUp(ImageView ivGif) {
+    private void viewPopUp(ImageView ivGif, final String url, final String filename) {
         Drawable myDrawable = ivGif.getDrawable();
         //    ImageView imageView = (ImageView) view;
         // Log.d(TAG, "onClick: "+imageView.getContentDescription());
@@ -371,7 +384,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         // Log.d(TAG, "onClick: "+ivGif.getId());
         // imageView.getTag();
         //ImageView ivDisplayFullImage = (ImageView) view.findViewById(R.id.ivDisplayFullImage);
-        //Glide.with(context).load(imageURL).into(ivDisplayFullImage);
+        //GlideApp.with(context).load(imageURL).into(ivDisplayFullImage);
         effect = Effectstype.Fliph;
         dialogBuilder= NiftyDialogBuilder.getInstance(context);
 
@@ -381,10 +394,33 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
 
         ImageView ivDisplayFullImage = view1.findViewById(R.id.ivDisplayFullImage);
-
-        //Glide.with(context).load( imageURL).into(ivDisplayFullImage);
-        ivDisplayFullImage.setImageDrawable(myDrawable);
         ivDisplayFullImage.getLayoutParams().height = 800;
+        Glide.with(ivDisplayFullImage.getContext()).load(url).into(ivDisplayFullImage);
+
+      //  final String giphyFilename = args.substring(args.lastIndexOf("/") + 1);
+        ivDisplayFullImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //------------prompt user to download
+                promptDownload(context, url, filename);
+                //------------
+                return false;
+            }
+        });
+        /*
+        ivDisplayFullImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //------------prompt user to download
+                promptDownload(context, validUrlImg, filenameImg);
+                //------------
+                return false;
+            }
+        });
+*/
+        //Glide.with(context).load( imageURL).into(ivDisplayFullImage);
+       // ivDisplayFullImage.setImageDrawable(myDrawable);
+        //ivDisplayFullImage.getLayoutParams().height = 800;
 
 
         dialogBuilder
