@@ -7,9 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.example.admin.chatterbox.R;
 import com.example.admin.chatterbox.injection.joingroup.DaggerJoinGroupComponent;
@@ -48,9 +46,9 @@ public class JoinGroup extends AppCompatActivity implements JoinGroupContract.Vi
 
        // etSearchView = (SearchView) findViewById(R.id.svJoinGroup);
 
-        etSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
+//        etSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
 
 //                public class DatabaseTable {
 //                    private final DatabaseOpenHelper mDatabaseOpenHelper;
@@ -60,14 +58,14 @@ public class JoinGroup extends AppCompatActivity implements JoinGroupContract.Vi
 //                    }
 //                }
 
-                return false;
+/*                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-        });
+        });*/
 
     }
 
