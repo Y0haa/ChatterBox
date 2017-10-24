@@ -231,7 +231,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         viewPopUp(holder.ivGif, args, giphyFilename);
                     }
                 });
-
+/*
                 holder.ivGif.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
@@ -241,7 +241,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         return false;
                     }
                 });
-
+*/
                 break;
             case UPLOADIMG :
                 imageURL =args;
