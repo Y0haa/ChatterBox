@@ -231,8 +231,41 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 });
                 break;
             case UPLOADIMG :
+                imageURL =args;
+                final String filenameImg;
+                final String validUrlImg = args.substring(args.indexOf(' ') + 1);
+                if (args.contains(" ")) {
+                    filenameImg = args.substring(0, args.indexOf(' '));
+                    if (URLUtil.isValidUrl(validUrlImg)) {
+                        holder.tvFileId.setVisibility(ImageView.VISIBLE);
+                        holder.ivGif.setVisibility(View.VISIBLE);
+                        holder.tvMsg.setVisibility(View.INVISIBLE);
+                        //holder.ivGif.getLayoutParams().height = 300;
+                        holder.ivGif.getLayoutParams().height = 300;
+                        holder.tvFileId.setText(filenameImg);
+                        Glide.with(context).load(validUrlImg).into(holder.ivGif);
+                        holder.ivGif.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
 
-                imageURL = holder.mItem.getPost().substring(11, Math.min(holder.mItem.getPost().length(), holder.mItem.getPost().length()));
+                                viewPopUp(holder.ivGif);
+                                //Log.d(TAG, "onClick: "+view.getTransitionName().toString());
+                            }
+                        });
+                        holder.ivGif.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View view) {
+                                //------------prompt user to download
+                                promptDownload(context, validUrlImg, filenameImg);
+                                //------------
+                                return false;
+                            }
+                        });
+
+                }
+                    //----
+                /*
+                    imageURL = holder.mItem.getPost().substring(11, Math.min(holder.mItem.getPost().length(), holder.mItem.getPost().length()));
                 if (URLUtil.isValidUrl(imageURL)) {
                     holder.tvFileId.setVisibility(ImageView.VISIBLE);
                     holder.ivGif.setVisibility(View.VISIBLE);
@@ -248,7 +281,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                             //Log.d(TAG, "onClick: "+view.getTransitionName().toString());
                         }
                     });
-
+*/
                 }
                 break;
 
@@ -276,8 +309,12 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                         holder.ivGif.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                //  Log.d(TAG, "onClick: " + validUrl);
-                                    new DownloadTask(context, validUrl, filename);
+
+
+                                //------------prompt user to download
+                                promptDownload(context, validUrl, filename);
+                                //------------
+
                             }
                         });
                     }
@@ -286,6 +323,43 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 break;
 
         }
+    }
+
+    private void promptDownload(final Context context, final String validUrl, final String filename) {
+
+        effect = Effectstype.RotateBottom;
+        dialogBuilder=NiftyDialogBuilder.getInstance(context);
+        dialogBuilder
+                .withTitle("Download Attention")                                  //.withTitle(null)  no title
+                .withTitleColor(R.color.gray)                                  //def
+                .withDividerColor("#11000000")                              //def
+                .withMessage("Would you like to download " + filename + " ?")                     //.withMessage(null)  no Msg
+                .withMessageColor(R.color.gray)                              //def  | withMessageColor(int resid)
+                .withDialogColor(R.color.gray)                               //def  | withDialogColor(int resid)                               //def
+                //    .withIcon(getResources().getDrawable(R.drawable.icon))
+                .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
+                .withDuration(700)                                          //def
+                .withEffect(effect)                                         //def Effectstype.Slidetop
+                .withButton1Text("OK")                                      //def gone
+                .withButton2Text("Cancel")                                  //def gone
+                //  .setCustomView(R.layout.custom_view,v.getContext())         //.setCustomView(View or ResId,context)
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //  Toast.makeText(v.getContext(), "i'm btn1", Toast.LENGTH_SHORT).show();
+                        //  Log.d(TAG, "onClick: " + validUrl);
+                        new DownloadTask(context, validUrl, filename);
+                        dialogBuilder.dismiss();
+                    }
+                })
+                .setButton2Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogBuilder.dismiss();
+                        // Toast.makeText(v.getContext(), "i'm btn2", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
     }
 
     private void viewPopUp(ImageView ivGif) {
@@ -316,7 +390,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         dialogBuilder
                 .withTitle(null)                                  //.withTitle(null)  no title
                 .withMessage(null)                     //.withMessage(null)  no Msg
-                .withDialogColor("#C1C8E4")                               //def  | withDialogColor(int resid)                               //def
+                .withDialogColor(R.color.gray)                               //def  | withDialogColor(int resid)                               //def
                 .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
                 .withDuration(700)                                          //def
                 .withEffect(effect)                                         //def Effectstype.Slidetop

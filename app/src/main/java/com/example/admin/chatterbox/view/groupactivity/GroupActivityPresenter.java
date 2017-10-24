@@ -267,7 +267,8 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
                     });
 
 if(typeOfFile.equals("UPLOADED_IMAGE")) {
-    sendMessage("/UPLOADIMG " + taskSnapshopURL, 0l);
+    //sendMessage("/UPLOADIMG " + taskSnapshopURL, 0l);
+    sendMessage("/UPLOADIMG " +filename+" "+  taskSnapshopURL, 0l);
     view.updateOnSendImage("File uploaded");
 }
 else if(typeOfFile.equals("UPLOADED_DOCUMENT")) {

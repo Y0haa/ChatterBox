@@ -10,10 +10,10 @@ import com.example.admin.chatterbox.BaseView;
 public interface MainActivityContract {
 
     interface View extends BaseView{
-        void updateView(String s);
+        void updateOnCreateChatGroup(String groupToken);
     }
 
     interface Presenter extends BasePresenter<View>{
-        void validationInput(String inputString);
+        void createChatGroup(String groupName);
     }
 }
