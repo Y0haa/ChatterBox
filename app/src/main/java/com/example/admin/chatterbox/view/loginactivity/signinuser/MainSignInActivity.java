@@ -77,6 +77,7 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
 
     @Inject
     MainLoginPresenter mActionsListener;
+    private String email;
 
 
     @Override
@@ -306,7 +307,14 @@ public class MainSignInActivity extends AppCompatActivity implements View.OnClic
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mActionsListener.forgotPassword(editText.getText().toString());
+
+
+                        email = editText.getText().toString();
+                        if (email.equals("")) {
+                            Toast.makeText(MainSignInActivity.this, "Please type a valid email!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            mActionsListener.forgotPassword(email);
+                        } ;
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

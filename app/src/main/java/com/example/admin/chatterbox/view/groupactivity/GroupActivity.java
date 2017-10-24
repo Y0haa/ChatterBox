@@ -5,8 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -15,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,6 +31,12 @@ import com.example.admin.chatterbox.util.KeyContract;
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -37,6 +47,8 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
     public static final String TAG = "GroupActivity";
     private static final int RESULT_LOAD_IMG = 1;
     private static final int PICKFILE_REQUEST_CODE = 2;
+    private static final int REQUEST_CAMERA = 0;
+    private static final int CAMERA_PERMISSION_CODE = 3;
     Effectstype effect;
     NiftyDialogBuilder dialogBuilder;
     @BindView(R.id.rvChat)
@@ -211,6 +223,12 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 startActivityForResult(intent, PICKFILE_REQUEST_CODE);
 
                 break;
+
+            case R.id.btnDialogTakePhoto:
+               // Toast.makeText(this, "photo", Toast.LENGTH_SHORT).show();
+                isCameraAllowed();
+                requestCameraPermission();
+                break;
         }
     }
 
@@ -242,6 +260,18 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                         returnCursor.getString(nameIndex),
                         "UPLOADED_DOCUMENT");
 
+            else if ( reqCode == 0)
+            {
+                try {
+                    onCaptureImageResult(data);
+                    presenter.uploadAFile(fileUri,
+                            returnCursor.getString(nameIndex),
+                            "UPLOADED_IMAGE");
+                }
+                catch (Exception e){
+                    Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
         } else {
             Toast.makeText(this, "You haven't picked a valid Image", Toast.LENGTH_LONG).show();
         }
@@ -291,5 +321,74 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
 
             }
         }
+        else if(requestCode == CAMERA_PERMISSION_CODE){
+
+            //If permission is granted
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+                cameraIntent();
+                //Displaying a toast
+
+            }else{
+                //Displaying another toast if permission is not granted
+
+            }
+        }
+    }
+
+    //------------------
+    private boolean isCameraAllowed() {
+        //Getting the permission status
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+
+        //If permission is granted returning true
+        if (result == PackageManager.PERMISSION_GRANTED)
+            return true;
+
+        //If permission is not granted returning false
+        return false;
+    }
+    //Requesting permission
+    private void requestCameraPermission(){
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA)){
+            //If the user has denied the permission previously your code will come to this block
+            //Here you can explain why you need this permission
+            //Explain here why you need this permission
+        }
+
+        //And finally ask for the permission
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_CODE);
+    }
+
+    private void cameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_CAMERA);
+
+    }
+
+    private void onCaptureImageResult(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
+        File destination = new File(Environment.getExternalStorageDirectory(),
+                "/"+ "ChatApp/"+
+                System.currentTimeMillis() + ".jpg");
+
+        Log.d(TAG, "location: " + destination.toString());
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // mActionsListener.savePictureProfile(data.getData(), CurrentStoredUser.getInstance().getUser().getId());
     }
 }

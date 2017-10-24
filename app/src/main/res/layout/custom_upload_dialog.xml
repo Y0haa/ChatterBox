@@ -20,6 +20,17 @@
             android:layout_height="100sp"
             android:background="@null"
             android:padding="2sp"
+            android:src="@mipmap/dialog_camera_button"
+            android:onClick="dialogClicking"
+            android:id="@+id/btnDialogTakePhoto"
+            android:layout_weight="1"/>
+
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="100sp"
+            android:background="@null"
+            android:padding="2sp"
             android:src="@mipmap/dialog_image_button"
             android:onClick="dialogClicking"
             android:id="@+id/btnDialogUploadImage"

@@ -5,11 +5,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.admin.chatterbox.R;
 
@@ -68,7 +70,14 @@ public class DownloadTask {
                     } else if(downloadUrl.toString().contains(".pdf")) {
                         // PDF file
                         intent.setDataAndType(uri, "application/pdf");
-                    } else {
+                    }
+                    else if(downloadUrl.toString().contains(".gif")) {
+                        // GIF file
+                        intent.setDataAndType(uri, "image/gif");
+                    } else if(downloadUrl.toString().contains(".jpg") || downloadUrl.toString().contains(".jpeg") || downloadUrl.toString().contains(".png")) {
+                        // JPG file
+                        intent.setDataAndType(uri, "image/jpeg");
+                    }else {
 
                         intent.setDataAndType(uri, "*/*");
                     }
@@ -76,16 +85,19 @@ public class DownloadTask {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                     PendingIntent pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
-
+                    Uri path = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     Notification noti = new Notification.Builder(context)
                             .setContentTitle("Chatapp Download Notification!")
                             .setContentText(downloadFileName).setSmallIcon(R.mipmap.ic_launcher)
+                            .setSound(path)
                             .setContentIntent(pIntent).build();
                     NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                     noti.flags |= Notification.FLAG_AUTO_CANCEL;
 
                     notificationManager.notify(0, noti);
+
+                    Toast.makeText(context, "File Downloaded", Toast.LENGTH_SHORT).show();
 
                 } else {
 

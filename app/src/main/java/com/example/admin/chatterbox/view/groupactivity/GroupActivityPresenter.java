@@ -54,7 +54,10 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
         @Override
         public void onNext(@io.reactivex.annotations.NonNull Response<GiphyResponse> giphyResponseResponse) {
             if (giphyResponseResponse != null) {
-                String url = "/giphy " + giphyResponseResponse.body().getData().getImages().getDownsized().getUrl();
+                //String url = "/giphy " + giphyResponseResponse.body().getData().getImages().getDownsized().getUrl();
+                String url = "/giphy " + giphyResponseResponse.body().getData().getImages().getDownsizedLarge().getUrl();
+                //String url = "/giphy " + giphyResponseResponse.body().getData().getImages().getFixedWidth().getUrl();
+                //String url = "/giphy " + giphyResponseResponse.body().getData().getUrl();
                 sendMessage(url, 0l);
             }
         }
@@ -186,6 +189,8 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
                 view.sendSystemMsg(commandList);
                 break;
 
+            case G:
+            case GIF:
             case GIPHY:
                 Log.d(TAG, "checkCommand: " + args + " " + args.toLowerCase().compareTo("trending"));
                 if (args != null && args.compareTo("") != 0) {
@@ -262,7 +267,8 @@ public class GroupActivityPresenter implements GroupActivityContract.Presenter {
                     });
 
 if(typeOfFile.equals("UPLOADED_IMAGE")) {
-    sendMessage("/UPLOADIMG " + taskSnapshopURL, 0l);
+    //sendMessage("/UPLOADIMG " + taskSnapshopURL, 0l);
+    sendMessage("/UPLOADIMG " +filename+" "+  taskSnapshopURL, 0l);
     view.updateOnSendImage("File uploaded");
 }
 else if(typeOfFile.equals("UPLOADED_DOCUMENT")) {
