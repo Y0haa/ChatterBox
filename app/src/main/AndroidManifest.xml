@@ -26,8 +26,9 @@
         <activity
             android:name=".view.mainactivity.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
-        <activity android:name=".view.groupactivity.GroupActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
+        <activity
+            android:name=".view.groupactivity.GroupActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity android:name=".view.creategroupactivity.CreateGroupActivity" />
 
         <meta-data
@@ -62,13 +63,14 @@
         <activity android:name=".view.loginactivity.signinuser.MainSignInActivity" />
         <activity android:name=".view.loginactivity.registeruser.MainRegisterActivity" />
         <activity android:name=".view.joingroup.JoinGroup" />
-        <activity android:name=".view.loginactivity.mainlogin.MainLoginActivity"
-                  android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <activity
+            android:name=".view.loginactivity.mainlogin.MainLoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
             </intent-filter>
         </activity>
+        <activity android:name=".view.contacts.Contacts"></activity>
     </application>
 
 </manifest>

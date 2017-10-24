@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.admin.chatterbox.R;
+import com.example.admin.chatterbox.view.contacts.Contacts;
+import com.example.admin.chatterbox.view.creategroupactivity.CreateGroupActivity;
 import com.example.admin.chatterbox.injection.mainactivity.DaggerMainActivityComponent;
 import com.example.admin.chatterbox.view.groupactivity.GroupActivity;
 import com.example.admin.chatterbox.view.joingroup.JoinGroup;
@@ -114,6 +116,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
                 Intent joinIntent = new Intent(this, JoinGroup.class);
                 startActivity(joinIntent);
+
+                break;
+            case R.id.btnContacts:
+                Intent contactIntent = new Intent(this, Contacts.class);
+                startActivity(contactIntent);
 
 
         }

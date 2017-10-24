@@ -50,7 +50,7 @@
             android:background="@drawable/other_acc_button_bg"
             android:textColor="@color/white"/>
         <Button
-            android:id="@+id/btn"
+            android:id="@+id/btnContacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
