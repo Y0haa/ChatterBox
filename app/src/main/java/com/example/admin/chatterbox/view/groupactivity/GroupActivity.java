@@ -218,7 +218,12 @@ public class GroupActivity extends AppCompatActivity implements ChatRecyclerView
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("*/*");
-                String[] mimetypes = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword","application/pdf"};
+                String[] mimetypes = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "application/msword",
+                        "application/pdf",
+                        "application/vnd.ms-excel",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                };
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
                 startActivityForResult(intent, PICKFILE_REQUEST_CODE);
 

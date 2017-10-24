@@ -77,7 +77,12 @@ public class DownloadTask {
                     } else if(downloadUrl.toString().contains(".jpg") || downloadUrl.toString().contains(".jpeg") || downloadUrl.toString().contains(".png")) {
                         // JPG file
                         intent.setDataAndType(uri, "image/jpeg");
-                    }else {
+                    }
+                    else if(downloadUrl.toString().contains(".xls") || downloadUrl.toString().contains(".xlsx")) {
+                        // Excel file
+                        intent.setDataAndType(uri, "application/vnd.ms-excel");
+                    }
+                    else {
 
                         intent.setDataAndType(uri, "*/*");
                     }
@@ -95,7 +100,8 @@ public class DownloadTask {
 
                     noti.flags |= Notification.FLAG_AUTO_CANCEL;
 
-                    notificationManager.notify(0, noti);
+                    int id = (int) System.currentTimeMillis();
+                    notificationManager.notify(id, noti);
 
                     Toast.makeText(context, "File Downloaded", Toast.LENGTH_SHORT).show();
 
