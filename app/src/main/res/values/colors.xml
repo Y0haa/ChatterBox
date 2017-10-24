@@ -21,4 +21,11 @@
     <color name="light_gray">#E8E1E7</color>
 
 
+    <color name="dialog_title_color">#ffffff</color>
+    <color name="dialog_message_color">#33ebf4</color>
+    <color name="dialog_color">#770a7f</color>
+    <color name="dialog_hint">#5AB9EA</color>
+    <color name="dialog_text">#ffffff</color>
+
+
 </resources>

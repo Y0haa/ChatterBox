@@ -20,7 +20,7 @@
             android:layout_height="100sp"
             android:background="@null"
             android:padding="2sp"
-            android:src="@mipmap/dialog_camera_button"
+            android:src="@mipmap/dialog_camera_button1"
             android:onClick="dialogClicking"
             android:id="@+id/btnDialogTakePhoto"
             android:layout_weight="1"/>

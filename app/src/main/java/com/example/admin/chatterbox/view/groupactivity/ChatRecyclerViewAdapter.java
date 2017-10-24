@@ -344,11 +344,11 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         dialogBuilder=NiftyDialogBuilder.getInstance(context);
         dialogBuilder
                 .withTitle("Download Attention")                                  //.withTitle(null)  no title
-                .withTitleColor(R.color.gray)                                  //def
-                .withDividerColor("#11000000")                              //def
+                .withTitleColor("#ffffff")                                  //def
+               // .withDividerColor("#11000000")                              //def
                 .withMessage("Would you like to download " + filename + " ?")                     //.withMessage(null)  no Msg
-                .withMessageColor(R.color.gray)                              //def  | withMessageColor(int resid)
-                .withDialogColor(R.color.gray)                               //def  | withDialogColor(int resid)                               //def
+                .withMessageColor(R.color.dialog_message_color)                              //def  | withMessageColor(int resid)
+                .withDialogColor(R.color.dialog_color)                               //def  | withDialogColor(int resid)                               //def
                 //    .withIcon(getResources().getDrawable(R.drawable.icon))
                 .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
                 .withDuration(700)                                          //def

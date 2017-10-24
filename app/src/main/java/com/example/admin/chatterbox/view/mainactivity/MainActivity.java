@@ -12,9 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.admin.chatterbox.R;
-import com.example.admin.chatterbox.view.contacts.Contacts;
-import com.example.admin.chatterbox.view.creategroupactivity.CreateGroupActivity;
 import com.example.admin.chatterbox.injection.mainactivity.DaggerMainActivityComponent;
+import com.example.admin.chatterbox.view.contacts.Contacts;
 import com.example.admin.chatterbox.view.groupactivity.GroupActivity;
 import com.example.admin.chatterbox.view.joingroup.JoinGroup;
 import com.example.admin.chatterbox.view.loginactivity.profileuser.ProfileFragment;
@@ -68,12 +67,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
                 effect = Effectstype.Fadein;
 
                 dialogBuilder
-                        .withTitle("Modal Dialog")                                  //.withTitle(null)  no title
-                        .withTitleColor("#FFFFFF")                                  //def
-                        .withDividerColor("#11000000")                              //def
-                        .withMessage("This is a modal Dialog.")                     //.withMessage(null)  no Msg
-                        .withMessageColor("#FFFFFFFF")                              //def  | withMessageColor(int resid)
-                        .withDialogColor("#FFE74C3C")                               //def  | withDialogColor(int resid)                               //def
+                        .withTitle("Create a group")                                  //.withTitle(null)  no title
+                        .withTitleColor("#ffffff")                                  //def
+                       // .withDividerColor("#33ebf4")                              //def
+                        .withMessage(null)                     //.withMessage(null)  no Msg
+                        .withMessageColor(R.color.dialog_message_color)                              //def  | withMessageColor(int resid)
+                        .withDialogColor(R.color.dialog_color)                               //def  | withDialogColor(int resid)                               //def
                         //  .withIcon(getResources().getDrawable(R.drawable.icon))
                         .isCancelableOnTouchOutside(true)                           //def    | isCancelable(true)
                         .withDuration(700)                                          //def
@@ -92,9 +91,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
                               //  Button button = (Button) dialog.findViewById(R.id.dialog_ok);
                                 EditText etCreateGroup = (EditText) dialogBuilder.findViewById(R.id.etCreateGroup);
-                                presenter.createChatGroup(etCreateGroup.getText().toString());
-                                dialogBuilder.dismiss();
-
+                                if(etCreateGroup.getText().toString().equals("")){
+                                    Toast.makeText(MainActivity.this, "Type a group name", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    presenter.createChatGroup(etCreateGroup.getText().toString());
+                                    dialogBuilder.dismiss();
+                                }
                                   //      Toast.makeText(MainActivity.this, etCreateGroup.getText().toString(), Toast.LENGTH_SHORT).show();
                             }
                         })
