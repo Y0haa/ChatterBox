@@ -265,6 +265,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                                 //Log.d(TAG, "onClick: "+view.getTransitionName().toString());
                             }
                         });
+                        /*
                         holder.ivGif.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View view) {
@@ -274,7 +275,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                                 return false;
                             }
                         });
-
+*/
                 }
                     //----
                 /*
